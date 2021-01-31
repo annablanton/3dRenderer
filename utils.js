@@ -28,7 +28,7 @@ window.requestAnimFrame = (function () {
 // add global parameters here
 
 const PARAMS = {
-    DEBUG: true,
+    DEBUG: false,
     SCALE: 3,
     BITWIDTH: 16
 };
@@ -78,7 +78,7 @@ function matByVec(mat, vec) {
 
     //console.log(newVector);
 
-    return newVector;
+    return new Vector(newVector[0], newVector[1]);
 }
 
 function viewAngleIntersection(posVector, deltaVector) {
@@ -94,6 +94,37 @@ function viewAngleIntersection(posVector, deltaVector) {
 
 function findHypotenuse(a, b) {
     return Math.sqrt(a ** 2 + b ** 2);
+}
+
+function transformEntity(game, entity, ctx) {
+    var tempCanvas = document.createElement("canvas");
+    var tempCtx = tempCanvas.getContext("2d");
+    tempCanvas.width = 800;
+    tempCanvas.height = 800;
+    tempCtx.fillStyle = "Red";
+    //tempCtx.fillRect(395, 395, 10, 10);
+    tempCtx.fillStyle = "Black";
+    //tempCtx.fillRect(470, 612, 20, 20);
+    tempCtx.save();
+    tempCtx.translate(400, 400);
+    tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
+    tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
+    var transMat = tempCtx.getTransform();
+    //console.log("transMat" + transMat);
+    var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
+    //console.log("matArray" + matArray);
+    //console.log(transformedVec);
+    //player.draw(tempCtx);
+    //this..draw(tempCtx);
+    tempCtx.restore();
+    var homogVec = [entity.x, entity.y, 1];
+    var transformedVec = matByVec(matArray, homogVec);
+    //console.log(transformedVec);
+    //console.log(transformedVec1);
+
+    //var homogVec2 = [this.p2.x, this.p2.y, 1];
+    //var transformedVec2 = matByVec(matArray, homogVec2);
+    return new entity.constructor(game, transformedVec.x, transformedVec.y);
 }
 
 //function gaussJordan(matrix) {

@@ -1,7 +1,7 @@
 // This game shell was happily modified from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 
 class GameEngine {
-    constructor(mapGraph) {
+    constructor() {
         this.entities = [];
         this.showOutlines = false;
         this.mapCtx = null;
@@ -19,8 +19,16 @@ class GameEngine {
         this.turnLeft = false;
         this.turnRight = false;
 
-        this.map = mapGraph;
+        //this.map = mapGraph;
         this.player = null;
+
+        this.SCALE = 800;
+        this.EXP_SCALE = 22;
+        this.EXP_EQ = 2 ** (1 / 200) * 5 ** (1 / 400);
+        this.X_CLAMP = 50;
+
+        this.entities = [];
+        this.walls = [];
     };
 
     init(mapCtx, intCtx, threeDCtx) {
@@ -51,30 +59,30 @@ class GameEngine {
             return { x: x, y: y };
         }
 
-        this.mapCtx.canvas.addEventListener("mousemove", function (e) {
+        this.threeDCtx.canvas.addEventListener("mousemove", function (e) {
             //console.log(getXandY(e));
             that.mouse = getXandY(e);
         }, false);
 
-        this.mapCtx.canvas.addEventListener("click", function (e) {
+        this.threeDCtx.canvas.addEventListener("click", function (e) {
             //console.log(getXandY(e));
             that.click = getXandY(e);
         }, false);
 
-        this.mapCtx.canvas.addEventListener("wheel", function (e) {
+        this.threeDCtx.canvas.addEventListener("wheel", function (e) {
             //console.log(getXandY(e));
             that.wheel = e;
             //       console.log(e.wheelDelta);
             e.preventDefault();
         }, false);
 
-        this.mapCtx.canvas.addEventListener("contextmenu", function (e) {
+        this.threeDCtx.canvas.addEventListener("contextmenu", function (e) {
             //console.log(getXandY(e));
             that.rightclick = getXandY(e);
             e.preventDefault();
         }, false);
 
-        this.mapCtx.canvas.addEventListener("keydown", function (e) {
+        this.threeDCtx.canvas.addEventListener("keydown", function (e) {
             switch (e.code) {
                 case "KeyW":
                     that.up = true;
@@ -98,7 +106,7 @@ class GameEngine {
             }
         });
 
-        this.mapCtx.canvas.addEventListener("keyup", function (e) {
+        this.threeDCtx.canvas.addEventListener("keyup", function (e) {
             switch (e.code) {
                 case "KeyW":
                     that.up = false;
@@ -124,19 +132,28 @@ class GameEngine {
     };
 
     addEntity(entity) {
-        this.entities.push(entity);
+        if (entity instanceof Player) {
+            this.player = entity;
+        } else this.entities.push(entity);
     };
 
     draw() {
         this.mapCtx.clearRect(-400, -400, this.mapCtx.canvas.width, this.mapCtx.canvas.height);
         this.intCtx.clearRect(0, 0, this.intCtx.canvas.width, this.intCtx.canvas.height);
         this.threeDCtx.clearRect(0, 0, this.threeDCtx.canvas.width, this.threeDCtx.canvas.height);
+
+        this.threeDCtx.fillStyle = "Cyan";
+        this.threeDCtx.fillRect(0, 0, 800, 400);
+        this.threeDCtx.fillStyle = "darkgrey";
+        this.threeDCtx.fillRect(0, 400, 800, 400);
         this.mapCtx.save();
+
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].draw(this.mapCtx);
+            this.entities[i].fpDraw(this.intCtx, this.threeDCtx);
         }
 
-        this.map.cullAndDraw(player, this.intCtx);
+        this.player.draw(this.mapCtx);
     };
 
     update() {
@@ -155,6 +172,8 @@ class GameEngine {
                 this.entities.splice(i, 1);
             }
         }
+
+        this.player.update();
     };
 
     loop() {
@@ -162,4 +181,6 @@ class GameEngine {
         this.update();
         this.draw();
     };
+
+
 };

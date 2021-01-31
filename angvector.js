@@ -1,6 +1,7 @@
-class Vector {
-    constructor(x, y) {
-        Object.assign(this, { x, y });
+class TwoDVector {
+    constructor(direction) {
+        this.x = Math.cos(direction);
+        this.y = Math.sin(direction);
     }
 
     normalize() {

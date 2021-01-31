@@ -9,7 +9,7 @@ class Player {
         this.SPEED = 200;
         this.TURN_SPEED = 2 * Math.PI;
 
-        this.game.player = this;
+        //this.game.player = this;
     }
 
     update() {
