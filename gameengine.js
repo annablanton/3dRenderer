@@ -163,7 +163,9 @@ class GameEngine {
 
         for (var i = 0; i < sortedEntities.length; i++) {
             var nextEntity = sortedEntities[i];
-            nextEntity.fpDraw(this.threeDCtx);
+            if (nextEntity != null) {
+                nextEntity.fpDraw(this.threeDCtx);
+            }
         }
 
         this.player.draw(this.mapCtx);

@@ -151,16 +151,14 @@ class Wall {
     }
 
     transformPoint(p) {
-        if (400 - p.y != 0) {
-            return new Point(320 * -(CANVAS_WIDTH / 2 - p.x) / (400 - p.y + 0.00001) + CANVAS_WIDTH / 2, p.y);
-        }
+        return new Point(320 * -(CANVAS_WIDTH / 2 - p.x) / (400 - p.y + 1) + CANVAS_WIDTH / 2, p.y);
     }
 
     wallUpper(p) {
-        return new Point(p.x, -1000/(CANVAS_HEIGHT/2 - p.y + 3) + CANVAS_HEIGHT/2);
+        return new Point(p.x, -1000/(CANVAS_HEIGHT/2 - p.y + 1) + CANVAS_HEIGHT/2);
     }
 
     wallLower(p) {
-        return new Point(p.x, 1000 / (CANVAS_HEIGHT/2 - p.y + 3) + CANVAS_HEIGHT/2);
+        return new Point(p.x, 1000 / (CANVAS_HEIGHT/2 - p.y + 1) + CANVAS_HEIGHT/2);
     }
 }
