@@ -22,7 +22,7 @@ class GameEngine {
         //this.map = mapGraph;
         this.player = null;
 
-        this.SCALE = 800;
+        this.SCALE = 22;
         this.EXP_SCALE = 22;
         this.EXP_EQ = 2 ** (1 / 200) * 5 ** (1 / 400);
         this.X_CLAMP = 50;
@@ -138,19 +138,32 @@ class GameEngine {
     };
 
     draw() {
-        this.mapCtx.clearRect(-400, -400, this.mapCtx.canvas.width, this.mapCtx.canvas.height);
+        this.mapCtx.clearRect(-CANVAS_WIDTH/2, -CANVAS_HEIGHT/2, this.mapCtx.canvas.width, this.mapCtx.canvas.height);
         this.intCtx.clearRect(0, 0, this.intCtx.canvas.width, this.intCtx.canvas.height);
         this.threeDCtx.clearRect(0, 0, this.threeDCtx.canvas.width, this.threeDCtx.canvas.height);
 
         this.threeDCtx.fillStyle = "Cyan";
-        this.threeDCtx.fillRect(0, 0, 800, 400);
+        this.threeDCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT/2);
         this.threeDCtx.fillStyle = "darkgrey";
-        this.threeDCtx.fillRect(0, 400, 800, 400);
+        this.threeDCtx.fillRect(0, CANVAS_HEIGHT/2, CANVAS_WIDTH, CANVAS_HEIGHT /2);
         this.mapCtx.save();
+
+        var transEntities = [];
 
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].draw(this.mapCtx);
-            this.entities[i].fpDraw(this.intCtx, this.threeDCtx);
+            var nextEntity = this.entities[i].getTransform(this.intCtx);
+            if (nextEntity !== null) {
+                transEntities.push(nextEntity);
+            }
+        }
+
+        var dg = digraphFromWalls(transEntities);
+        var sortedEntities = topologicalSort(dg);
+
+        for (var i = 0; i < sortedEntities.length; i++) {
+            var nextEntity = sortedEntities[i];
+            nextEntity.fpDraw(this.threeDCtx);
         }
 
         this.player.draw(this.mapCtx);

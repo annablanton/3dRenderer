@@ -18,7 +18,7 @@ class Wall {
         ctx.stroke();
     }
 
-    fpDraw(intCtx, threeDCtx) {
+    getTransform(intCtx) {
 
 
         var transWall = this.transformWall(intCtx);
@@ -29,7 +29,7 @@ class Wall {
         //var nextEdge = [];
         if (v1.y <= CANVAS_HEIGHT / 2) {
             //var finalV1 = new Point(((v1.x - CANVAS_WIDTH/2) / (findHypotenuse(v1.x-CANVAS_WIDTH/2, v1.y-CANVAS_HEIGHT/2))) * this.SCALE + CANVAS_WIDTH/2, v1.y);
-            var finalV1 = new Point(((v1.x - CANVAS_WIDTH / 2) / -(v1.y - CANVAS_HEIGHT / 2 - this.game.X_CLAMP)) * this.game.SCALE + CANVAS_WIDTH / 2, v1.y);
+            var finalV1 = this.transformPoint(v1);
             //console.log(v1);
             //console.log(finalV1);
             //console.log(finalV1);
@@ -38,9 +38,9 @@ class Wall {
             //console.log(finalV1);
             //viewVertices.push(finalV1);
             //nextEdge.push(numVertices++);
-            if (v2.y <= 400) {
+            if (v2.y <= CANVAS_HEIGHT / 2) {
                 //var finalV2 = new Point(((v2.x - CANVAS_WIDTH/2) / (findHypotenuse(v2.x-CANVAS_WIDTH/2, v2.y-CANVAS_HEIGHT/2))) * this.SCALE + CANVAS_WIDTH/2, v2.y);
-                var finalV2 = new Point(((v2.x - CANVAS_WIDTH / 2) / -(v2.y - CANVAS_HEIGHT / 2 - this.game.X_CLAMP)) * this.game.SCALE + CANVAS_WIDTH / 2, v2.y);
+                var finalV2 = this.transformPoint(v2);
                 //viewVertices.push(finalV2);
                 //console.log(finalV2);
                 intCtx.lineTo(finalV2.x, finalV2.y);
@@ -60,8 +60,7 @@ class Wall {
                 var viewAngleInter = viewAngleIntersection(posVector, vector);
                 //var finalV2 = new Point((viewAngleInter.x - CANVAS_WIDTH / 2) / (findHypotenuse(viewAngleInter.x - CANVAS_WIDTH / 2, viewAngleInter.y - CANVAS_HEIGHT / 2))
                 //    * this.SCALE + CANVAS_WIDTH/2, viewAngleInter.y);
-                var finalV2 = new Point((viewAngleInter.x - CANVAS_WIDTH / 2) / -(viewAngleInter.y - CANVAS_HEIGHT / 2 - this.game.X_CLAMP)
-                    * this.game.SCALE + CANVAS_WIDTH / 2, viewAngleInter.y);
+                var finalV2 = this.transformPoint(viewAngleInter);
 
 
                 //viewVertices.push(finalV2);
@@ -89,11 +88,11 @@ class Wall {
                 //console.log(viewAngleInter);
                 //ctx.lineTo(viewAngleInter.x, viewAngleInter.y);
                 //var finalV1 = new Point((viewAngleInter.x - CANVAS_WIDTH / 2) / (findHypotenuse(viewAngleInter.x - CANVAS_WIDTH / 2, viewAngleInter.y - CANVAS_HEIGHT / 2)) * this.SCALE+CANVAS_WIDTH / 2, viewAngleInter.y);
-                var finalV1 = new Point((viewAngleInter.x - CANVAS_WIDTH / 2) / -(viewAngleInter.y - CANVAS_HEIGHT / 2 - this.game.X_CLAMP) * this.game.SCALE + CANVAS_WIDTH / 2, viewAngleInter.y);
+                var finalV1 = this.transformPoint(viewAngleInter);
                 //viewVertices.push(finalV1);
                 intCtx.moveTo(finalV1.x, finalV1.y);
                 //nextEdge.push(numVertices++);
-                var finalV2 = new Point(((v2.x - CANVAS_WIDTH / 2) / -(v2.y - CANVAS_HEIGHT / 2 - this.game.X_CLAMP)) * this.game.SCALE + CANVAS_WIDTH / 2, v2.y);
+                var finalV2 = this.transformPoint(v2);
                 //viewVertices.push(finalV2);
                 intCtx.lineTo(finalV2.x, finalV2.y);
                 //nextEdge.push(numVertices++);
@@ -104,47 +103,28 @@ class Wall {
                 intCtx.stroke();
             }
         }
-            //console.log(finalV1);
-            //console.log(finalV2);
-            //ctx.stroke();
-        //}
 
-        //for (var i = 0; i < transEntities; i++) {
-        //    if (transEntities[i].y <= CANVAS_HEIGHT / 2) {
-        //        var p = new Point(((transEntities[i].x - CANVAS_WIDTH / 2) / -(transEntities[i].y - CANVAS_HEIGHT / 2 - this.X_CLAMP)) * this.SCALE + CANVAS_WIDTH / 2, transEntities[i].y);
-        //        intCtx.fillRect(p.x - 2, p.y - 2, 4, 4);
-        //        viewEntities.push(new transEntities[i].constructor(this, p.x, p.y));
-        //    }
-        //}
-        //var viewMap = new MapGraph(viewVertices, viewEdges);
+        return viewWall;
 
-        //console.log(viewMap);
-        //viewMap.draw(ctx);
+    }
 
-        //uncomment from here
-        //transPlayer.draw(intCtx);
+    fpDraw(threeDCtx) {
+        threeDCtx.beginPath();
+        var v1 = this.p1;
+        var v2 = this.p2;
+        //threeDCtx.moveTo(v1.x, 400);
+        var p1 = this.wallUpper(v1);
+        var p2 = this.wallLower(v1);
+        var p3 = this.wallLower(v2);
+        var p4 = this.wallUpper(v2);
+        threeDCtx.fillStyle = this.color;
+        threeDCtx.lineTo(p1.x, p1.y);
+        threeDCtx.lineTo(p2.x, p2.y);
+        threeDCtx.lineTo(p3.x, p3.y);
+        threeDCtx.lineTo(p4.x, p4.y);
 
-        //console.log(threeDCtx);
-        //var colors = ["Red", "Blue", "Green"]
-        //for (var i = 0; i < viewWalls.length; i++) {
-        if (viewWall != null) {
-            threeDCtx.beginPath();
-            var v1 = viewWall.p1;
-            var v2 = viewWall.p2;
-            //threeDCtx.moveTo(v1.x, 400);
-            var p1 = new Point(v1.x, 400 - (this.game.EXP_EQ) ** v1.y * this.game.EXP_SCALE);
-            var p2 = new Point(v1.x, 400 + (this.game.EXP_EQ) ** v1.y * this.game.EXP_SCALE);
-            var p3 = new Point(v2.x, 400 + (this.game.EXP_EQ) ** v2.y * this.game.EXP_SCALE);
-            var p4 = new Point(v2.x, 400 - (this.game.EXP_EQ) ** v2.y * this.game.EXP_SCALE);
-            threeDCtx.fillStyle = viewWall.color;
-            threeDCtx.lineTo(p1.x, p1.y);
-            threeDCtx.lineTo(p2.x, p2.y);
-            threeDCtx.lineTo(p3.x, p3.y);
-            threeDCtx.lineTo(p4.x, p4.y);
-
-            threeDCtx.closePath();
-            threeDCtx.fill();
-        }
+        threeDCtx.closePath();
+        threeDCtx.fill();
     }
 
     transformWall(ctx) {
@@ -153,9 +133,10 @@ class Wall {
         tempCanvas.width = 800;
         tempCanvas.height = 800;
         tempCtx.fillStyle = "Red";
+
         tempCtx.fillStyle = "Black";
         tempCtx.save();
-        tempCtx.translate(400, 400);
+        tempCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
         tempCtx.rotate(-1 * this.game.player.direction - Math.PI / 2);
         tempCtx.translate(-1 * this.game.player.x, -1 * this.game.player.y);
         var transMat = tempCtx.getTransform();
@@ -167,5 +148,19 @@ class Wall {
         var homogVec2 = [this.p2.x, this.p2.y, 1];
         var transformedVec2 = matByVec(matArray, homogVec2);
         return new Wall(this, transformedVec1, transformedVec2, this.color);
+    }
+
+    transformPoint(p) {
+        if (400 - p.y != 0) {
+            return new Point(320 * -(CANVAS_WIDTH / 2 - p.x) / (400 - p.y + 0.00001) + CANVAS_WIDTH / 2, p.y);
+        }
+    }
+
+    wallUpper(p) {
+        return new Point(p.x, -1000/(CANVAS_HEIGHT/2 - p.y + 3) + CANVAS_HEIGHT/2);
+    }
+
+    wallLower(p) {
+        return new Point(p.x, 1000 / (CANVAS_HEIGHT/2 - p.y + 3) + CANVAS_HEIGHT/2);
     }
 }

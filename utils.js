@@ -99,14 +99,14 @@ function findHypotenuse(a, b) {
 function transformEntity(game, entity, ctx) {
     var tempCanvas = document.createElement("canvas");
     var tempCtx = tempCanvas.getContext("2d");
-    tempCanvas.width = 800;
-    tempCanvas.height = 800;
+    tempCanvas.width = CANVAS_WIDTH;
+    tempCanvas.height = CANVAS_HEIGHT;
     tempCtx.fillStyle = "Red";
     //tempCtx.fillRect(395, 395, 10, 10);
     tempCtx.fillStyle = "Black";
     //tempCtx.fillRect(470, 612, 20, 20);
     tempCtx.save();
-    tempCtx.translate(400, 400);
+    tempCtx.translate(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
     tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
     tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
     var transMat = tempCtx.getTransform();

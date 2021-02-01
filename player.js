@@ -6,8 +6,8 @@ class Player {
         this.VECTOR_SCALE = 20;
         this.PLAYER_SIZE = 4;
         this.velocity = { x: 0, y: 0 };
-        this.SPEED = 200;
-        this.TURN_SPEED = 2 * Math.PI;
+        this.SPEED = 50;
+        this.TURN_SPEED =  Math.PI / 2;
 
         //this.game.player = this;
     }
