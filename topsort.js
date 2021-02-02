@@ -114,7 +114,7 @@ function digraphFromWalls(walls) {
                             var wall2SmallerY = wall2.p1.y;
                             var wall2SmallerYCorrespondingX = wall2.p1.x;
                         } else {
-                            var wall2LargerY = wall1.p2.y;
+                            var wall2LargerY = wall2.p1.y;
                             var wall2LargerYCorrespondingX = wall2.p1.x;
                             var wall2SmallerY = wall2.p2.y;
                             var wall2SmallerYCorrespondingX = wall2.p2.x;
@@ -156,7 +156,7 @@ function digraphFromWalls(walls) {
                                 }
                             }
                         } else if (wall1.p1.x >= wall2SmallerX && wall1.p2.x <= wall2LargerX && wall1.p2.x >= wall2SmallerX && wall1.p2.x <= wall2LargerX) {
-                            if (wall1.p1.x != wall2SmallerYCorrespondingX) {
+                            if ((wall1.p1.x != wall2SmallerYCorrespondingX || wall1.p1.y != wall2SmallerY) && (wall1.p1.x != wall2LargerYCorrespondingX || wall1.p1.y != wall2LargerY)) {
                                 var wall1Angle = Math.atan2(wall1.p1.y - wall2SmallerY, wall1.p1.x - wall2SmallerYCorrespondingX);
                             } else {
                                 var wall1Angle = Math.atan2(wall1.p2.y - wall2SmallerY, wall1.p2.x - wall2SmallerYCorrespondingX);

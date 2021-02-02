@@ -29,10 +29,10 @@ ASSET_MANAGER.downloadAll(function () {
     threeDCanvas.width = CANVAS_WIDTH;
     GAME_ENGINE.init(mapCtx, intermediateCtx, threeDCtx);
     GAME_ENGINE.addEntity(player);
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-36, 0), new Point(-18, -12), "Black"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, -12), new Point(9, 0), "Red"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(9, 0), new Point(12, 36), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(12, 36), new Point(-36, 24), "Green"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, 0), new Point(0, 0), "Black"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, 0), new Point(0, -18), "Red"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, -18), new Point(-18, -18), "Blue"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, -18), new Point(-19, 1), "Green"));
     //GAME_ENGINE.addEntity(new Imp(GAME_ENGINE, 200, 100, Math.PI));
 
     GAME_ENGINE.start();

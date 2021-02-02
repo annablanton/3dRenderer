@@ -118,10 +118,10 @@ class Wall {
         var p3 = this.wallLower(v2);
         var p4 = this.wallUpper(v2);
         threeDCtx.fillStyle = this.color;
-        threeDCtx.lineTo(600 / 30 * (p1.x - CANVAS_WIDTH/2) + CANVAS_WIDTH/2, p1.y);
-        threeDCtx.lineTo(600 / 30 * (p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p2.y);
-        threeDCtx.lineTo(600 / 30 * (p3.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p3.y);
-        threeDCtx.lineTo(600 / 30 * (p4.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p4.y);
+        threeDCtx.lineTo(800 / 50 * (p1.x - CANVAS_WIDTH/2) + CANVAS_WIDTH/2, p1.y);
+        threeDCtx.lineTo(800 / 50 * (p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p2.y);
+        threeDCtx.lineTo(800 / 50 * (p3.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p3.y);
+        threeDCtx.lineTo(800 / 50 * (p4.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2, p4.y);
 
         threeDCtx.closePath();
         threeDCtx.fill();
@@ -151,7 +151,7 @@ class Wall {
     }
 
     transformPoint(p) {
-        return new Point(30 * -(CANVAS_WIDTH / 2 - p.x) / (400 - p.y + 2) + CANVAS_WIDTH / 2, p.y);
+        return new Point(50 * -(CANVAS_WIDTH / 2 - p.x) / ((CANVAS_HEIGHT/2 - p.y)/1.5 + 2.5  ) + CANVAS_WIDTH / 2, p.y);
     }
 
     wallUpper(p) {
