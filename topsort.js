@@ -387,10 +387,10 @@ function cutAtIntersect(wall1, wall2) {
 
 function cutWall(wall) {
     var v = new Vector(wall.p2.x - wall.p1.x, wall.p2.y - wall.p1.y);
-    if (wall.p1.x < 0) {
-        if (wall.p2.x < -CANVAS_WIDTH) {
+    if (500 / 6 * (wall.p1.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 < 0) {
+        if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 < -CANVAS_WIDTH) {
             return null;
-        } else if (wall.p2.x > CANVAS_WIDTH * 2) {
+        } else if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 > CANVAS_WIDTH * 2) {
             var newY1 = wall.p1.y - v.y * wall.p1.x / v.x;
             var newY2 = wall.p2.y + v.y * -(wall.p2.x - CANVAS_WIDTH) / v.x;
             return new Wall(null, new Point(0, newY1), new Point(CANVAS_WIDTH, newY2), null);
@@ -398,22 +398,22 @@ function cutWall(wall) {
             var newY1 = wall.p1.y - v.y * wall.p1.x / v.x;
             return new Wall(null, new Point(0, newY1), new Point(wall.p2.x, wall.p2.y), null);
         }
-    } else if (wall.p1.x > CANVAS_WIDTH * 2) {
-        if (wall.p2.x < -CANVAS_WIDTH) {
+    } else if (500 / 6 * (wall.p1.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 > CANVAS_WIDTH * 2) {
+        if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 < -CANVAS_WIDTH) {
             var newY1 = wall.p1.y + v.y * -(wall.p1.x - CANVAS_WIDTH) / v.x;
             var newY2 = wall.p2.y - v.y * wall.p1.x / v.x;
             return new Wall(null, new Point(CANVAS_WIDTH, newY1), new Point(0, newY2), null);
-        } else if (wall.p2.x > CANVAS_WIDTH * 2) {
+        } else if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 > CANVAS_WIDTH * 2) {
             return null;
         } else {
             var newY1 = wall.p1.y + v.y * -(wall.p1.x - CANVAS_WIDTH) / v.x;
             return new Wall(null, new Point(CANVAS_WIDTH, newY1), new Point(wall.p2.x, wall.p2.y), null);
         }
     } else {
-        if (wall.p2.x < -CANVAS_WIDTH) {
+        if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 < -CANVAS_WIDTH) {
             var newY2 = wall.p2.y - v.y * wall.p1.x / v.x;
             return new Wall(null, new Point(wall.p1.x, wall.p1.y), new Point(0, newY2), null);
-        } else if (wall.p2.x > CANVAS_WIDTH * 2) {
+        } else if (500 / 6 * (wall.p2.x - CANVAS_WIDTH / 2) + CANVAS_WIDTH / 2 > CANVAS_WIDTH * 2) {
             var newY2 = wall.p2.y + v.y * -(wall.p2.x - CANVAS_WIDTH) / v.x;
             return new Wall(null, new Point(wall.p1.x, wall.p1.y), new Point(CANVAS_WIDTH, newY2), null);
         } else {
