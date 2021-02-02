@@ -63,9 +63,13 @@ function digraphFromWalls(walls) {
     for (var i = 0; i < walls.length; i++) {
         for (var j = 0; j < walls.length; j++) {
             if (i != j) {
-
                 var wall1 = cutWall(walls[i]);
                 var wall2 = cutWall(walls[j]);
+
+                var cutWalls = cutAtIntersect(wall1, wall2);
+
+                wall1 = cutWalls.wall1;
+                wall2 = cutWalls.wall2;
                 if (wall1 != null && wall2 != null) {
 
                     var v1 = new Vector(wall1.p2.x - wall1.p1.x, wall1.p2.y - wall1.p1.y);
@@ -98,6 +102,100 @@ function digraphFromWalls(walls) {
     }
 
     return dg;
+}
+
+function cutAtIntersect(wall1, wall2) {
+    if (wall1 != null && wall2 != null) {
+        var wall1Origin = wall1.p1;
+        var wall2Origin = wall2.p1;
+
+        var wall1Vector = new Vector(wall1.p2.x - wall1.p1.x, wall1.p2.y - wall1.p1.y);
+        var wall2Vector = new Vector(wall2.p2.x - wall2.p1.x, wall2.p2.y - wall2.p1.y);
+        if (wall1Vector.x != 0) {
+            var eq = (wall2Vector.x + wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+            var u = (wall1Origin.y - wall2Origin.y + wall1Vector.y * eq) / wall2Vector.y;
+            var t = (wall2Vector.x * u + wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+
+            var xIntersect = wall1Origin.x + wall1Vector.x * t;
+            var yIntersect = wall1Origin.y + wall1Vector.y * t;
+
+            var wall1SmallerX = Math.min(wall1.p1.x, wall1.p2.x);
+            var wall1LargerX = Math.max(wall1.p1.x, wall1.p2.x);
+
+            var wall2SmallerX = Math.min(wall2.p1.x, wall2.p2.x);
+            var wall2LargerX = Math.max(wall2.p1.x, wall2.p2.x);
+
+            if (xIntersect <= wall1LargerX && xIntersect >= wall1SmallerX && xIntersect <= wall2LargerX && xIntersect >= wall2SmallerX) {
+                if (xIntersect < CANVAS_WIDTH / 2) {
+                    if (wall1.p1.x <= xIntersect) {
+                        var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
+                    } else if (wall1.p2.x <= xIntersect) {
+                        var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
+                    } else {
+                        var cutWall1 = wall1;
+                    }
+
+                    if (wall2.p1.x <= xIntersect) {
+                        var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                    } else if (wall2.p2.x <= xIntersect) {
+                        var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
+                    } else {
+                        var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
+                    }
+
+                    return { wall1: cutWall1, wall2: cutWall1 };
+                } else {
+                    if (wall1.p1.x >= xIntersect) {
+                        var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
+                    } else if (wall1.p2.x >= xIntersect) {
+                        var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
+                    } else {
+                        var cutWall1 = wall1;
+                    }
+
+                    if (wall2.p1.x >= xIntersect) {
+                        var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                    } else if (wall2.p2.x >= xIntersect) {
+                        var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
+                    } else {
+                        var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
+                    }
+
+                    return { wall1: cutWall1, wall2: cutWall2 };
+                }
+            } else {
+                return { wall1: wall1, wall2: wall2 };
+            }
+        } else if (!(wall2Vector.x == 0)) {
+            var xIntersect = wall2Origin.x + wall2Vector.x * (wall1Origin.x - wall2Origin.x) / wall2Vector.y;
+            var yIntersect = wall2Origin.y + wall2Vector.y * (wall1Origin.y - wall2Origin.y) / wall2Vector.x;
+            if (xIntersect < CANVAS_WIDTH / 2) {
+                if (wall2.p1.x <= xIntersect) {
+                    var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                } else if (wall2.p2.x <= xIntersect) {
+                    var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
+                } else {
+                    var cutWall2 = wall2;
+                }
+
+                return { wall1: wall1, wall2: cutWall2 };
+            } else {
+                if (wall2.p1.x >= xIntersect) {
+                    var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                } else if (wall2.p2.x >= xIntersect) {
+                    var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
+                } else {
+                    var cutWall2 = wall2;
+                }
+
+                return { wall1: wall1, wall2: cutWall2 };
+            }
+        } else {
+            return { wall1: wall1, wall2: wall2 };
+        }
+    } else {
+        return { wall1: wall1, wall2: wall2 };
+    }
 }
 
 function cutWall(wall) {
