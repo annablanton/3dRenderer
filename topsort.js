@@ -100,24 +100,106 @@ function digraphFromWalls(walls) {
                         var wall1LargerY = Math.max(wall1.p1.y, wall1.p2.y);
                         if (wall1.p1.y > wall1.p2.y) {
                             var wall1LargerYCorrespondingX = wall1.p1.x;
+                            var wall1SmallerY = wall1.p2.y;
+                            var wall1SmallerYCorrespondingX = wall1.p2.x;
                         } else {
                             var wall1LargerYCorrespondingX = wall1.p2.x;
+                            var wall1SmallerY = wall1.p1.y;
+                            var wall1SmallerYCorrespondingX = wall1.p1.x;
+                        }
+
+                        if (wall2.p1.y < wall2.p2.y) {
+                            var wall2LargerY = wall2.p2.y;
+                            var wall2LargerYCorrespondingX = wall2.p2.x;
+                            var wall2SmallerY = wall2.p1.y;
+                            var wall2SmallerYCorrespondingX = wall2.p1.x;
+                        } else {
+                            var wall2LargerY = wall1.p2.y;
+                            var wall2LargerYCorrespondingX = wall2.p1.x;
+                            var wall2SmallerY = wall2.p2.y;
+                            var wall2SmallerYCorrespondingX = wall2.p2.x;
                         }
                         var wall2SmallerX = Math.min(wall2.p1.x, wall2.p2.x);
                         var wall2LargerX = Math.max(wall2.p1.x, wall2.p2.x);
 
                         if (wall2.p1.x > wall1SmallerX && wall2.p1.x < wall1LargerX) {
-                            if (Math.atan2(wall2.p1.y - wall1LargerY, wall2.p1.x - wall1LargerYCorrespondingX) < 0) {
-                                dg.addDirectedEdge(j, i);
+
+                            var wall1Angle = Math.atan2(wall1LargerY - wall1SmallerY, wall1LargerYCorrespondingX - wall1SmallerYCorrespondingX);
+                            var wall2Angle = Math.atan2(wall2.p1.y - wall1SmallerY, wall2.p1.x - wall1SmallerYCorrespondingX);
+                            if (wall1Angle != Math.PI / 2) {
+                                if (wall1Angle < Math.PI / 2) {
+                                    if (wall2Angle > wall1Angle && wall2Angle < Math.PI / 2) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                } else {
+                                    if (wall2Angle < wall1Angle && wall2Angle >= Math.PI / 2) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                }
                             }
                         } else if (wall2.p2.x > wall1SmallerX && wall2.p2.x < wall1LargerX) {
-                            if (Math.atan2(wall2.p2.y - wall1LargerY, wall2.p2.x - wall1LargerYCorrespondingX) < 0) {
-                                dg.addDirectedEdge(j, i);
+                            var wall1Angle = Math.atan2(wall1LargerY - wall1SmallerY, wall1LargerYCorrespondingX - wall1SmallerYCorrespondingX);
+                            if (wall2.p2.x != wall1SmallerYCorrespondingX) {
+                                var wall2Angle = Math.atan2(wall2.p2.y - wall1SmallerY, wall2.p2.x - wall1SmallerYCorrespondingX);
+                            } else {
+                                var wall2Angle = Math.atan2(wall2.p1.y - wall1SmallerY, wall2.p2.x - wall1SmallerYCorrespondingX);
+                            }
+                            if (wall1Angle != Math.PI / 2) {
+                                if (wall1Angle < Math.PI / 2) {
+                                    if (wall2Angle > wall1Angle && wall2Angle < Math.PI / 2) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                } else {
+                                    if (wall2Angle < wall1Angle && wall2Angle >= Math.PI / 2) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                }
+                            }
+                        } else if (wall1.p1.x >= wall2SmallerX && wall1.p2.x <= wall2LargerX && wall1.p2.x >= wall2SmallerX && wall1.p2.x <= wall2LargerX) {
+                            if (wall1.p1.x != wall2SmallerYCorrespondingX) {
+                                var wall1Angle = Math.atan2(wall1.p1.y - wall2SmallerY, wall1.p1.x - wall2SmallerYCorrespondingX);
+                            } else {
+                                var wall1Angle = Math.atan2(wall1.p2.y - wall2SmallerY, wall1.p2.x - wall2SmallerYCorrespondingX);
+                            }
+                            var wall2Angle = Math.atan2(wall2LargerY - wall2SmallerY, wall2LargerYCorrespondingX - wall2SmallerYCorrespondingX);
+                            if (wall2Angle != Math.PI / 2) {
+                                if (wall2Angle < Math.PI / 2) {
+                                    if (wall1Angle > -Math.PI / 2 && wall1Angle < wall2Angle) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                } else {
+                                    if (wall1Angle >= wall2Angle || (wall1Angle <= -Math.PI / 2)) {
+                                        dg.addDirectedEdge(i, j);
+                                    }
+                                }
                             }
                         }
-                        //else if ((wall2.p1.x <= wall1SmallerX && wall2.p2.x >= wall1LargerX) || (wall2.p2.x <= wall1SmallerX && wall2.p1.x >= wall1LargerX)) {
-                        //    if (Math.atan2(wall2.p1.y - wall1LargerY, wall2.p1.x - wall1LargerYCorrespondingX) < 0 || Math.atan2(wall2.p1.y - wall1LargerY, wall2.p1.x - wall1LargerYCorrespondingX) < 0) {
-                        //        dg.addDirectedEdge(j, i);
+                            //else if (wall1.p1.x >= wall2SmallerX && wall1.p1.x)
+                        //    else {
+                        //        if (Math.atan2(wall2.p1.y - wall1LargerY, wall2.p1.x - wall1LargerYCorrespondingX) < 0) {
+                        //            dg.addDirectedEdge(j, i);
+                        //        }
+                        //    }
+                        //} else if (wall2.p2.x > wall1SmallerX && wall2.p2.x < wall1LargerX) {
+                        //    if (Math.atan(wall1LargerY - wall1SmallerY, wall1LargerYCorrespondingX - wall1SmallerYCorrespondingX) < Math.PI / 2) {
+                        //        if (Math.atan2(wall2.p2.y - wall1LargerY, wall2.p2.x - wall1LargerYCorrespondingX) < 0) {
+                        //            dg.addDirectedEdge(j, i);
+                        //        }
+                        //    } else {
+                        //        if (Math.atan2(wall2.p2.y - wall1LargerY, wall2.p2.x - wall1LargerYCorrespondingX) > 0) {
+                        //            dg.addDirectedEdge(j, i);
+                        //        }
+                        //    }
+                        //}
+                        //else if (wall1.p1.x > wall2SmallerX && wall1.p1.x < wall2LargerX && wall1.p2.x <= wall2SmallerX && wall1.p2.x >= wall2LargerX) {
+                        //    if (Math.atan(wall2LargerY - wall2SmallerY, wall2LargerYCorrespondingX - wall2SmallerYCorrespondingX) < Math.PI / 2) {
+                        //        if (Math.atan(wall1.p1.y - wall2LargerY, wall1.p1.x - wall2LargerYCorrespondingX) > 0) {
+                        //            dg.addDirectedEdge(j, i);
+                        //        }
+                        //    } else {
+                        //        if (Math.atan(wall1.p1.y - wall2LargerY, wall1.p1.x - wall2LargerYCorrespondingX) < 0) {
+                        //            dg.addDirectedEdge(j, i);
+                        //        }
                         //    }
                         //}
                     }
@@ -204,94 +286,98 @@ function correctFloatingPointError(wall1, wall2) {
 
 function cutAtIntersect(wall1, wall2) {
     if (wall1 != null && wall2 != null) {
-        var wall1Origin = wall1.p1;
-        var wall2Origin = wall2.p1;
+        if (wall1.p1.x != wall2.p1.x && wall1.p2.x != wall2.p1.x && wall1.p2.x != wall2.p2.x) {
+            var wall1Origin = wall1.p1;
+            var wall2Origin = wall2.p1;
 
-        var wall1Vector = new Vector(wall1.p2.x - wall1.p1.x, wall1.p2.y - wall1.p1.y);
-        var wall2Vector = new Vector(wall2.p2.x - wall2.p1.x, wall2.p2.y - wall2.p1.y);
-        if (wall1Vector.x != 0) {
-            var constEQ = (wall2Origin.x - wall1Origin.x) / wall1Vector.x;
-            var uEQ = wall2Vector.x / wall1Vector.x;
-            var u = (wall2Origin.y - wall1Origin.y - wall1Vector.y * constEQ) / (wall1Vector.y * uEQ - wall2Vector.y);
-            var t = (wall2Vector.x * u + wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+            var wall1Vector = new Vector(wall1.p2.x - wall1.p1.x, wall1.p2.y - wall1.p1.y);
+            var wall2Vector = new Vector(wall2.p2.x - wall2.p1.x, wall2.p2.y - wall2.p1.y);
+            if (wall1Vector.x != 0) {
+                var constEQ = (wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+                var uEQ = wall2Vector.x / wall1Vector.x;
+                var u = (wall2Origin.y - wall1Origin.y - wall1Vector.y * constEQ) / (wall1Vector.y * uEQ - wall2Vector.y);
+                var t = (wall2Vector.x * u + wall2Origin.x - wall1Origin.x) / wall1Vector.x;
 
-            var xIntersect = wall1Origin.x + wall1Vector.x * t;
-            var yIntersect = wall1Origin.y + wall1Vector.y * t;
+                var xIntersect = wall1Origin.x + wall1Vector.x * t;
+                var yIntersect = wall1Origin.y + wall1Vector.y * t;
 
-            var wall1SmallerX = Math.min(wall1.p1.x, wall1.p2.x);
-            var wall1LargerX = Math.max(wall1.p1.x, wall1.p2.x);
+                var wall1SmallerX = Math.min(wall1.p1.x, wall1.p2.x);
+                var wall1LargerX = Math.max(wall1.p1.x, wall1.p2.x);
 
-            var wall2SmallerX = Math.min(wall2.p1.x, wall2.p2.x);
-            var wall2LargerX = Math.max(wall2.p1.x, wall2.p2.x);
+                var wall2SmallerX = Math.min(wall2.p1.x, wall2.p2.x);
+                var wall2LargerX = Math.max(wall2.p1.x, wall2.p2.x);
 
-            if (xIntersect < wall1LargerX && xIntersect > wall1SmallerX && xIntersect < wall2LargerX && xIntersect > wall2SmallerX) {
-                if (xIntersect < CANVAS_WIDTH / 2) {
-                    if (wall1.p1.x < xIntersect) {
-                        var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
-                    } else if (wall1.p2.x < xIntersect) {
-                        var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
+                if (xIntersect < wall1LargerX && xIntersect > wall1SmallerX && xIntersect < wall2LargerX && xIntersect > wall2SmallerX) {
+                    if (xIntersect < CANVAS_WIDTH / 2) {
+                        if (wall1.p1.x < xIntersect) {
+                            var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
+                        } else if (wall1.p2.x < xIntersect) {
+                            var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
+                        } else {
+                            var cutWall1 = wall1;
+                        }
+
+                        if (wall2.p1.x < xIntersect) {
+                            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                        } else if (wall2.p2.x < xIntersect) {
+                            var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
+                        } else {
+                            var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
+                        }
+
+                        return { wall1: cutWall1, wall2: cutWall2 };
                     } else {
-                        var cutWall1 = wall1;
-                    }
+                        if (wall1.p1.x > xIntersect) {
+                            var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
+                        } else if (wall1.p2.x > xIntersect) {
+                            var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
+                        } else {
+                            var cutWall1 = wall1;
+                        }
 
-                    if (wall2.p1.x <= xIntersect) {
-                        var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
-                    } else if (wall2.p2.x < xIntersect) {
-                        var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
-                    } else {
-                        var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
-                    }
+                        if (wall2.p1.x > xIntersect) {
+                            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+                        } else if (wall2.p2.x > xIntersect) {
+                            var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
+                        } else {
+                            var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
+                        }
 
-                    return { wall1: cutWall1, wall2: cutWall2 };
+                        return { wall1: cutWall1, wall2: cutWall2 };
+                    }
                 } else {
-                    if (wall1.p1.x > xIntersect) {
-                        var cutWall1 = new Wall(null, new Point(xIntersect, yIntersect), wall1.p2, null);
-                    } else if (wall1.p2.x > xIntersect) {
-                        var cutWall1 = new Wall(null, wall1.p1, new Point(xIntersect, yIntersect), null);
-                    } else {
-                        var cutWall1 = wall1;
-                    }
-
-                    if (wall2.p1.x > xIntersect) {
-                        var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
-                    } else if (wall2.p2.x > xIntersect) {
-                        var cutWall2 = new Wall(null, wall2.p1, new Point(xIntersect, yIntersect), null);
-                    } else {
-                        var cutWall2 = new Wall(null, wall2.p1, wall2.p2, null);
-                    }
-
-                    return { wall1: cutWall1, wall2: cutWall2 };
+                    return { wall1: wall1, wall2: wall2 };
                 }
-            } else {
+            }
+            //else if (!(wall2Vector.x == 0)) {
+            //    var xIntersect = wall2Origin.x + wall2Vector.x * (wall1Origin.x - wall2Origin.x) / wall2Vector.y;
+            //    var yIntersect = wall2Origin.y + wall2Vector.y * (wall1Origin.y - wall2Origin.y) / wall2Vector.x;
+            //    if (xIntersect < CANVAS_WIDTH / 2) {
+            //        if (wall2.p1.x <= xIntersect) {
+            //            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+            //        } else if (wall2.p2.x <= xIntersect) {
+            //            var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
+            //        } else {
+            //            var cutWall2 = wall2;
+            //        }
+
+            //        return { wall1: wall1, wall2: cutWall2 };
+            //    } else {
+            //        if (wall2.p1.x >= xIntersect) {
+            //            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
+            //        } else if (wall2.p2.x >= xIntersect) {
+            //            var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
+            //        } else {
+            //            var cutWall2 = wall2;
+            //        }
+
+            //        return { wall1: wall1, wall2: cutWall2 };
+            //    }
+            //}
+            else {
                 return { wall1: wall1, wall2: wall2 };
             }
-        }
-        //else if (!(wall2Vector.x == 0)) {
-        //    var xIntersect = wall2Origin.x + wall2Vector.x * (wall1Origin.x - wall2Origin.x) / wall2Vector.y;
-        //    var yIntersect = wall2Origin.y + wall2Vector.y * (wall1Origin.y - wall2Origin.y) / wall2Vector.x;
-        //    if (xIntersect < CANVAS_WIDTH / 2) {
-        //        if (wall2.p1.x <= xIntersect) {
-        //            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
-        //        } else if (wall2.p2.x <= xIntersect) {
-        //            var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
-        //        } else {
-        //            var cutWall2 = wall2;
-        //        }
-
-        //        return { wall1: wall1, wall2: cutWall2 };
-        //    } else {
-        //        if (wall2.p1.x >= xIntersect) {
-        //            var cutWall2 = new Wall(null, new Point(xIntersect, yIntersect), wall2.p2, null);
-        //        } else if (wall2.p2.x >= xIntersect) {
-        //            var cutWall2 = new Wall(null, new wall2.p1, new Point(xIntersect, yIntersect), null);
-        //        } else {
-        //            var cutWall2 = wall2;
-        //        }
-
-        //        return { wall1: wall1, wall2: cutWall2 };
-        //    }
-        //}
-        else {
+        } else {
             return { wall1: wall1, wall2: wall2 };
         }
     } else {
