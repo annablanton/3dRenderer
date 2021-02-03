@@ -31,9 +31,12 @@ ASSET_MANAGER.downloadAll(function () {
     GAME_ENGINE.addEntity(player);
     GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, 0), new Point(0, 0), "Black"));
     GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, 0), new Point(0, -18), "Red"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, -18), new Point(-18, -18), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, -18), new Point(-19, 1), "Green"));
-    //GAME_ENGINE.addEntity(new Imp(GAME_ENGINE, 200, 100, Math.PI));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, -18), new Point(-5, -18), "Blue"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-13, -18), new Point(-18, -18), "Blue"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-13, -18), new Point(-13, -36), "Blue"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-5, -18), new Point(-5, -36), "Blue"));
+    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, -18), new Point(-18, 0), "Green"));
+    GAME_ENGINE.addEntity(new Imp(GAME_ENGINE, -9, -9, Math.PI));
 
     GAME_ENGINE.start();
 

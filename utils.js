@@ -121,10 +121,17 @@ function transformEntity(game, entity, ctx) {
     var transformedVec = matByVec(matArray, homogVec);
     //console.log(transformedVec);
     //console.log(transformedVec1);
+    var playerEntityVector = new Vector(game.player.x - entity.x, game.player.y - entity.y);
+    playerEntityVector.normalize();
+    var dirAngle = getAngle(playerEntityVector);
+    var adjustedDirAngle = (dirAngle - entity.direction);
+    if (adjustedDirAngle < 0) {
+        adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
+    }
 
     //var homogVec2 = [this.p2.x, this.p2.y, 1];
     //var transformedVec2 = matByVec(matArray, homogVec2);
-    return new entity.constructor(game, transformedVec.x, transformedVec.y);
+    return new entity.constructor(game, transformedVec.x, transformedVec.y, adjustedDirAngle, entity.elapsedTime);
 }
 
 //function gaussJordan(matrix) {

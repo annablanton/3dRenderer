@@ -151,7 +151,7 @@ class Wall {
     }
 
     transformPoint(p) {
-        return new Point(50 * -(CANVAS_WIDTH / 2 - p.x) / ((CANVAS_HEIGHT/2 - p.y)/1.5 + 2.5  ) + CANVAS_WIDTH / 2, p.y);
+        return new Point(50 * -(CANVAS_WIDTH / 2 - p.x) / ((CANVAS_HEIGHT/2 - p.y)/1.5 + 2  ) + CANVAS_WIDTH / 2, p.y);
     }
 
     wallUpper(p) {
