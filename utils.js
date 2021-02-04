@@ -33,6 +33,24 @@ const PARAMS = {
     BITWIDTH: 16
 };
 
+function frameRotationMatrix(game) {
+    var tempCanvas = document.createElement("canvas");
+    var tempCtx = tempCanvas.getContext("2d");
+    tempCanvas.width = 800;
+    tempCanvas.height = 800;
+    tempCtx.fillStyle = "Red";
+
+    tempCtx.fillStyle = "Black";
+    tempCtx.save();
+    tempCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
+    tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
+    var transMat = tempCtx.getTransform();
+    var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
+    tempCtx.restore;
+    return matArray;
+}
+
 function rotationCanvas(spritesheet, sx, sy, sw, sh, rads) {
     var offscreenCanvas = document.createElement("canvas");
     var dim = Math.max(sw, sh);
@@ -96,29 +114,29 @@ function findHypotenuse(a, b) {
     return Math.sqrt(a ** 2 + b ** 2);
 }
 
-function transformEntity(game, entity, ctx) {
-    var tempCanvas = document.createElement("canvas");
-    var tempCtx = tempCanvas.getContext("2d");
-    tempCanvas.width = CANVAS_WIDTH;
-    tempCanvas.height = CANVAS_HEIGHT;
-    tempCtx.fillStyle = "Red";
-    //tempCtx.fillRect(395, 395, 10, 10);
-    tempCtx.fillStyle = "Black";
-    //tempCtx.fillRect(470, 612, 20, 20);
-    tempCtx.save();
-    tempCtx.translate(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-    tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
-    tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
-    var transMat = tempCtx.getTransform();
+function transformEntity(game, entity, matrix) {
+    //var tempCanvas = document.createElement("canvas");
+    //var tempCtx = tempCanvas.getContext("2d");
+    //tempCanvas.width = CANVAS_WIDTH;
+    //tempCanvas.height = CANVAS_HEIGHT;
+    //tempCtx.fillStyle = "Red";
+    ////tempCtx.fillRect(395, 395, 10, 10);
+    //tempCtx.fillStyle = "Black";
+    ////tempCtx.fillRect(470, 612, 20, 20);
+    //tempCtx.save();
+    //tempCtx.translate(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+    //tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
+    //tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
+    //var transMat = tempCtx.getTransform();
     //console.log("transMat" + transMat);
-    var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
+    //var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
     //console.log("matArray" + matArray);
     //console.log(transformedVec);
     //player.draw(tempCtx);
     //this..draw(tempCtx);
-    tempCtx.restore();
+    //tempCtx.restore();
     var homogVec = [entity.x, entity.y, 1];
-    var transformedVec = matByVec(matArray, homogVec);
+    var transformedVec = matByVec(matrix, homogVec);
     //console.log(transformedVec);
     //console.log(transformedVec1);
     var playerEntityVector = new Vector(game.player.x - entity.x, game.player.y - entity.y);

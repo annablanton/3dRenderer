@@ -37,8 +37,8 @@ class Imp {
         ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
     }
 
-    getTransform(intCtx) {
-        var transformedImp = transformEntity(this.game, this, intCtx);
+    getTransform(intCtx, matrix) {
+        var transformedImp = transformEntity(this.game, this, matrix);
 
         //console.log(transformedImp);
 
@@ -57,7 +57,7 @@ class Imp {
 
             return new Imp(this.game, 800 * -(CANVAS_WIDTH / 2 - transformedImp.x) / ((400 - transformedImp.y) / 1.5 + 2) + CANVAS_WIDTH / 2, transformedImp.y,
                 adjustedDirAngle, this.animations);
-        }
+        } else return null;
     }
 
 

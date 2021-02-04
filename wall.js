@@ -18,10 +18,10 @@ class Wall {
         ctx.stroke();
     }
 
-    getTransform(intCtx) {
+    getTransform(intCtx, matrix) {
 
 
-        var transWall = this.transformWall(intCtx);
+        var transWall = this.transformWall(matrix);
         intCtx.beginPath();
         var v1 = transWall.p1;
         var v2 = transWall.p2;
@@ -127,26 +127,26 @@ class Wall {
         threeDCtx.fill();
     }
 
-    transformWall(ctx) {
-        var tempCanvas = document.createElement("canvas");
-        var tempCtx = tempCanvas.getContext("2d");
-        tempCanvas.width = 800;
-        tempCanvas.height = 800;
-        tempCtx.fillStyle = "Red";
+    transformWall(matrix) {
+        //var tempCanvas = document.createElement("canvas");
+        //var tempCtx = tempCanvas.getContext("2d");
+        //tempCanvas.width = 800;
+        //tempCanvas.height = 800;
+        //tempCtx.fillStyle = "Red";
 
-        tempCtx.fillStyle = "Black";
-        tempCtx.save();
-        tempCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-        tempCtx.rotate(-1 * this.game.player.direction - Math.PI / 2);
-        tempCtx.translate(-1 * this.game.player.x, -1 * this.game.player.y);
-        var transMat = tempCtx.getTransform();
-        var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
-        tempCtx.restore();
+        //tempCtx.fillStyle = "Black";
+        //tempCtx.save();
+        //tempCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+        //tempCtx.rotate(-1 * this.game.player.direction - Math.PI / 2);
+        //tempCtx.translate(-1 * this.game.player.x, -1 * this.game.player.y);
+        //var transMat = tempCtx.getTransform();
+        //var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
+        //tempCtx.restore();
         var homogVec1 = [this.p1.x, this.p1.y, 1];
-        var transformedVec1 = matByVec(matArray, homogVec1);
+        var transformedVec1 = matByVec(matrix, homogVec1);
 
         var homogVec2 = [this.p2.x, this.p2.y, 1];
-        var transformedVec2 = matByVec(matArray, homogVec2);
+        var transformedVec2 = matByVec(matrix, homogVec2);
         return new Wall(this, transformedVec1, transformedVec2, this.color);
     }
 

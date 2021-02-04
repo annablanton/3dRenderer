@@ -150,9 +150,11 @@ class GameEngine {
 
         var transEntities = [];
 
+        var matrix = frameRotationMatrix(this);
+
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].draw(this.mapCtx);
-            var nextEntity = this.entities[i].getTransform(this.intCtx);
+            var nextEntity = this.entities[i].getTransform(this.intCtx, matrix);
             if (nextEntity !== null) {
                 transEntities.push(nextEntity);
             }
