@@ -3,12 +3,13 @@ class Imp {
         Object.assign(this, { game, x, y, direction });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/imp.png");
         //console.log(this.spritesheet);
-        this.p1 = new Point(this.x - (2 * Math.sin(this.direction)), this.y - (2 * Math.cos(this.direction)));
-        this.p2 = new Point(this.x + (2 * Math.sin(this.direction)), this.y + (2 * Math.cos(this.direction)));
+        this.p1 = new Point(this.x - 33/(((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
+        this.p2 = new Point(this.x + 33/(((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.testWall = new Wall(this.game, this.p1, this.p2, 'Black');
 
         this.action = 0; //0 = walk, 1 = fire, 2 = die
         this.animations = [];
+        this.SCALE = 1000;
 
 
         for (var i = 0; i < 3; i++) {
@@ -45,7 +46,7 @@ class Imp {
         if (transformedImp.y <= CANVAS_HEIGHT / 2) {
             //intCtx.fillRect(transformedImp.x - 2, transformedImp.y - 2, 4, 4);
             //console.log(p);
-            intCtx.fillRect(transformedImp.x - 2, transformedImp.y - 2, 4, 4);
+            intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedImp.x) / ((400 - transformedImp.y) + 2) + CANVAS_WIDTH / 2 - 2, transformedImp.y - 2, 4, 4);
 
             var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
             playerImpVector.normalize();
@@ -55,7 +56,7 @@ class Imp {
                 adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
             }
 
-            return new Imp(this.game, 800 * -(CANVAS_WIDTH / 2 - transformedImp.x) / ((400 - transformedImp.y) / 1.5 + 2) + CANVAS_WIDTH / 2, transformedImp.y,
+            return new Imp(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedImp.x) / ((400 - transformedImp.y) + 2) + CANVAS_WIDTH / 2, transformedImp.y,
                 adjustedDirAngle, this.animations);
         } else return null;
     }
@@ -74,29 +75,29 @@ class Imp {
 
             //console.log(adjustedDirAngle);
             if (this.direction <= Math.PI / 8 || this.direction >= 15 * Math.PI / 8) {
-                this.animations[0][0].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 42))),
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][0].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 95 / (CANVAS_HEIGHT / 2 - this.y + 2)+ CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 42));
             } else if (this.direction <= 3 * Math.PI / 8) {
-                this.animations[0][7].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 46))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][7].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 243 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 46));
             } else if (this.direction <= 5 * Math.PI / 8) {
-                this.animations[0][6].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 39))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][6].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 140 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / (((CANVAS_HEIGHT / 2 - this.y) + 2) * 39));
             } else if (this.direction <= 7 * Math.PI / 8) {
-                this.animations[0][5].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 35))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][5].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 34));
             } else if (this.direction <= 9 * Math.PI / 8) {
-                this.animations[0][4].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 35))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][4].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 100 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 35));
             } else if (this.direction <= 11 * Math.PI / 8) {
-                this.animations[0][3].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 34))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][3].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 34));
             } else if (this.direction <= 13 * Math.PI / 8) {
-                this.animations[0][2].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 39))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * 59));
+                this.animations[0][2].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 140 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 39));
             } else if (this.direction <= 15 * Math.PI / 8) {
-                this.animations[0][1].drawFrame(this.game.clockTick, threeDCtx, this.x - (2000 / ((CANVAS_HEIGHT / 2 - this.y + 1) * (59 / 46))) / 2,
-                    -400 / (CANVAS_HEIGHT / 2 - this.y + 1) + CANVAS_HEIGHT / 2, 2000 / ((CANVAS_HEIGHT / 2 - this.y + 1)*59));
+                this.animations[0][1].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 243 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2)*46));
             }
 
             //threeDCtx.fillRect(320 * -(CANVAS_WIDTH / 2 - transformedImp.x) / (400 - transformedImp.y + 1) + CANVAS_WIDTH / 2 - 5, 400 - 5, 10, 10);
