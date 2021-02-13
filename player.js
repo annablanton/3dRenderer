@@ -7,7 +7,9 @@ class Player {
         this.PLAYER_SIZE = 4;
         this.velocity = { x: 0, y: 0 };
         this.SPEED = 50;
-        this.TURN_SPEED =  Math.PI / 2;
+        this.TURN_SPEED = Math.PI / 2;
+        this.radius = 1;
+        this.spaceReleased = true;
 
         //this.game.player = this;
     }
@@ -37,9 +39,33 @@ class Player {
             this.velocity.y += 0;
         }
 
+        if (this.game.space && this.spaceReleased) {
+            this.spaceReleased = false;
+            this.game.addEntity(new Arrow(this.game, this.x, this.y, this.direction));
+            console.log(this.direction);
+        } else if (!this.game.space) {
+            this.spaceReleased = true;
+        }
+
         if (this.game.turnLeft && !this.game.turnRight) this.updateDirection(-this.TURN_SPEED * TICK);
         else if (this.game.turnRight && !this.game.turnLeft) {
             this.updateDirection(this.TURN_SPEED * TICK);
+        }
+
+        var that = this;
+
+        this.game.entities.forEach(function (entity) {
+            if (entity !== that && entity.radius && that.collide(entity)) {
+                if (entity instanceof Chicken) {
+                    entity.removeFromWorld = true;
+                }
+            }
+        });
+
+        if (this.direction > Math.PI) {
+            this.direction = this.direction - 2 * Math.PI;
+        } else if (this.direction < -Math.PI) {
+            this.direction = this.direction + 2 * Math.PI;
         }
         this.x += this.velocity.x * TICK;
         this.y += this.velocity.y * TICK;
@@ -50,9 +76,19 @@ class Player {
         this.dirVector = new TwoDVector(this.direction);
     }
 
+    collide(other) {
+        return distance(this.x, this.y, other.x, other.y) < this.radius + other.radius;
+    }
+
     draw(ctx) {
         this.drawPlayer(ctx);
         this.drawDirection(ctx);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = "Red";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
     }
 
     drawPlayer(ctx) {

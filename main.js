@@ -9,6 +9,8 @@ function getRandomMagnitude(n) {
 
 var ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("./sprites/imp.png");
+ASSET_MANAGER.queueDownload("./sprites/chickenonaplate-1.png");
+ASSET_MANAGER.queueDownload("./sprites/projectiles.png");
 ASSET_MANAGER.downloadAll(function () {
     var map = document.getElementById("map");
     map.width = CANVAS_WIDTH;
@@ -19,7 +21,6 @@ ASSET_MANAGER.downloadAll(function () {
     mapCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
 
     var GAME_ENGINE = new GameEngine();
-    var player = new Player(GAME_ENGINE, -100, 100, 0);
     //var mapModel = new Map(GAME_ENGINE, player, mapGraph);
     var intermediate = document.getElementById("intermediate");
     intermediate.height = CANVAS_HEIGHT;
@@ -27,18 +28,15 @@ ASSET_MANAGER.downloadAll(function () {
     var intermediateCtx = intermediate.getContext("2d");
     var threeDCanvas = document.getElementById("final");
     var threeDCtx = threeDCanvas.getContext("2d");  
+    threeDCanvas.requestPointerLock = threeDCanvas.requestPointerLock ||
+        threeDCanvas.mozRequestPointerLock;
+    threeDCanvas.onclick = function () {
+        threeDCanvas.requestPointerLock();
+    }
     threeDCanvas.height = CANVAS_HEIGHT;
     threeDCanvas.width = CANVAS_WIDTH;
     GAME_ENGINE.init(mapCtx, intermediateCtx, threeDCtx);
-    GAME_ENGINE.addEntity(player);
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, 0), new Point(0, 0), "Black"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, 0), new Point(0, -18), "Red"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(0, -18), new Point(-5, -18), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-13, -18), new Point(-18, -18), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-13, -18), new Point(-13, -36), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-5, -18), new Point(-5, -36), "Blue"));
-    GAME_ENGINE.addEntity(new Wall(GAME_ENGINE, new Point(-18, -18), new Point(-18, 0), "Green"));
-    GAME_ENGINE.addEntity(new Imp(GAME_ENGINE, -9, -9, Math.PI));
+    new SceneManager(GAME_ENGINE);
 
     GAME_ENGINE.start();
 

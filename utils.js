@@ -28,7 +28,7 @@ window.requestAnimFrame = (function () {
 // add global parameters here
 
 const PARAMS = {
-    DEBUG: false,
+    DEBUG: true,
     SCALE: 3,
     BITWIDTH: 16
 };
@@ -114,27 +114,11 @@ function findHypotenuse(a, b) {
     return Math.sqrt(a ** 2 + b ** 2);
 }
 
+function distance(x1, y1, x2, y2) {
+    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+}
+
 function transformEntity(game, entity, matrix) {
-    //var tempCanvas = document.createElement("canvas");
-    //var tempCtx = tempCanvas.getContext("2d");
-    //tempCanvas.width = CANVAS_WIDTH;
-    //tempCanvas.height = CANVAS_HEIGHT;
-    //tempCtx.fillStyle = "Red";
-    ////tempCtx.fillRect(395, 395, 10, 10);
-    //tempCtx.fillStyle = "Black";
-    ////tempCtx.fillRect(470, 612, 20, 20);
-    //tempCtx.save();
-    //tempCtx.translate(CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-    //tempCtx.rotate(-1 * game.player.direction - Math.PI / 2);
-    //tempCtx.translate(-1 * game.player.x, -1 * game.player.y);
-    //var transMat = tempCtx.getTransform();
-    //console.log("transMat" + transMat);
-    //var matArray = [[transMat.m11, transMat.m21, transMat.m41], [transMat.m12, transMat.m22, transMat.m42], [transMat.m13, transMat.m23, transMat.m33]];
-    //console.log("matArray" + matArray);
-    //console.log(transformedVec);
-    //player.draw(tempCtx);
-    //this..draw(tempCtx);
-    //tempCtx.restore();
     var homogVec = [entity.x, entity.y, 1];
     var transformedVec = matByVec(matrix, homogVec);
     //console.log(transformedVec);
@@ -150,6 +134,32 @@ function transformEntity(game, entity, matrix) {
     //var homogVec2 = [this.p2.x, this.p2.y, 1];
     //var transformedVec2 = matByVec(matArray, homogVec2);
     return new entity.constructor(game, transformedVec.x, transformedVec.y, adjustedDirAngle, entity.elapsedTime);
+}
+
+function findIntersect(wall1Origin, wall2Origin, wall1Vector, wall2Vector) {
+    if (wall1Vector.x == 0 && wall2Vector.x != 0) {
+        var xIntersect = wall1Origin.x;
+        var yIntersect = wall2Origin.y + wall2Vector.y * (wall1Origin.x - wall2Origin.x) / wall2Vector.x;
+    } else if (wall2Vector.x == 0) {
+        var xIntersect = wall2Origin.x;
+        var yIntersect = wall1Origin.y + wall1Vector.y * (wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+    } else if (wall1Vector.y == 0 && wall2Vector.y != 0) {
+        var xIntersect = wall2Origin.x + wall2Vector.x * (wall1Origin.y - wall2Origin.y) / wall2Vector.y;
+        var yIntersect = wall1Origin.y;
+    } else if (wall2Vector.y == 0) {
+        var xIntersect = wall1Origin.x + wall1Vector.x * (wall2Origin.y - wall1Origin.y) / wall1Vector.y;
+        var yIntersect = wall2Origin.y;
+    } else {
+        var constEQ = (wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+        var uEQ = wall2Vector.x / wall1Vector.x;
+        var u = (wall2Origin.y - wall1Origin.y - wall1Vector.y * constEQ) / (wall1Vector.y * uEQ - wall2Vector.y);
+        var t = (wall2Vector.x * u + wall2Origin.x - wall1Origin.x) / wall1Vector.x;
+
+        var xIntersect = wall1Origin.x + wall1Vector.x * t;
+        var yIntersect = wall1Origin.y + wall1Vector.y * t;
+    }
+    return new Point(xIntersect, yIntersect);
+
 }
 
 //function gaussJordan(matrix) {

@@ -18,6 +18,8 @@ class GameEngine {
         this.down = false;
         this.turnLeft = false;
         this.turnRight = false;
+        this.space = false;
+        this.xDelta = 0;
 
         //this.map = mapGraph;
         this.player = null;
@@ -103,6 +105,9 @@ class GameEngine {
                 case "ArrowRight":
                     that.turnRight = true;
                     break;
+                case "Space":
+                    e.preventDefault();
+                    that.space = true;
             }
         });
 
@@ -127,8 +132,29 @@ class GameEngine {
                 case "ArrowRight":
                     that.turnRight = false;
                     break;
+                case "Space":
+                    that.space = false;
             }
         });
+        var that = this;
+        function lockChangeAlert() {
+            if (document.pointerLockElement === that.threeDCtx.canvas ||
+                document.mozPointerLockElement === that.threeDCtx.canvas) {
+                console.log('The pointer lock status is now locked');
+                that.threeDCtx.canvas.addEventListener("mousemove", updatePosition, false);
+            } else {
+                console.log('The pointer lock status is now unlocked');
+                that.threeDCtx.canvas.removeEventListener("mousemove", updatePosition, false);
+            }
+        }
+
+        function updatePosition(e) {
+            that.player.updateDirection(e.movementX / 400);
+        }
+
+        document.addEventListener("pointerlockchange", lockChangeAlert, false);
+
+        document.addEventListener("mozpointerlockchange", lockChangeAlert, false);
     };
 
     addEntity(entity) {
@@ -170,10 +196,13 @@ class GameEngine {
             }
         }
 
+        this.hud.fpDraw(this.threeDCtx);
+
         this.player.draw(this.mapCtx);
     };
 
     update() {
+        PARAMS.DEBUG = document.getElementById("debug").checked;
         var entitiesCount = this.entities.length;
 
         for (var i = 0; i < entitiesCount; i++) {

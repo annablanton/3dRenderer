@@ -1,6 +1,7 @@
 class Wall {
     constructor(game, p1, p2, color) {
-        Object.assign(this, { game, p1, p2, color})
+        Object.assign(this, { game, p1, p2, color })
+        this.lineCollision = true;
     }
 
     update() {
