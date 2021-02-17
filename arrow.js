@@ -2,10 +2,12 @@ class Arrow {
     constructor(game, x, y, direction) {
         Object.assign(this, { game, x, y, direction});
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/projectiles.png");
+        //console.log(this.direction);
         //console.log(this.spritesheet);
-        this.p1 = new Point(this.x - 20 / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
-        this.p2 = new Point(this.x + 20 / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
+        
         this.radius = 0.25;
+        this.p1 = new Point(this.x - PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
+        this.p2 = new Point(this.x + PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.testWall = new Wall(this.game, this.p1, this.p2, 'Black');
 
         this.action = 0; //0 = walk, 1 = fire, 2 = die
@@ -42,7 +44,7 @@ class Arrow {
         var that = this;
         this.game.entities.forEach(function (entity) {
             if (entity !== that && entity.radius && that.collide(entity)) {
-                if (entity instanceof Imp) {
+                if (entity instanceof DungeonImp) {
                     that.removeFromWorld = true;
                     entity.removeFromWorld = true;
                 }
@@ -55,6 +57,7 @@ class Arrow {
     }
 
     draw(ctx) {
+        //console.log(this.direction);
         ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
     }
 
@@ -84,26 +87,48 @@ class Arrow {
         }
     }
 
-    getTransform(intCtx, matrix) {
-        var transformedArrow = transformEntity(this.game, this, matrix);
+    getRotation(matrix) {
+        return transformEntity(this.game, this, matrix, Arrow);
 
         //console.log(transformedArrow);
 
-        if (transformedArrow.y <= CANVAS_HEIGHT / 2) {
-            //intCtx.fillRect(transformedArrow.x - 2, transformedArrow.y - 2, 4, 4);
+        //if (transformedArrow.y <= CANVAS_HEIGHT / 2) {
+        //    //intCtx.fillRect(transformedArrow.x - 2, transformedArrow.y - 2, 4, 4);
+        //    //console.log(p);
+        //    intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2 - 2, transformedArrow.y - 2, 4, 4);
+
+        //    var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
+        //    playerImpVector.normalize();
+        //    var dirAngle = getAngle(playerImpVector);
+        //    var adjustedDirAngle = (dirAngle - this.direction);
+        //    if (adjustedDirAngle < 0) {
+        //        adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
+        //    }
+
+        //    return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2, transformedArrow.y,
+        //        adjustedDirAngle, this.animations);
+        //} else return null;
+    }
+
+    getTransform(intCtx) {
+        if (this.y <= CANVAS_HEIGHT / 2) {
+            //intCtx.fillRect(this.x - 2, this.y - 2, 4, 4);
             //console.log(p);
-            intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2 - 2, transformedArrow.y - 2, 4, 4);
+            intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2 - 2, this.y - 2, 4, 4);
 
             var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
             playerImpVector.normalize();
-            var dirAngle = getAngle(playerImpVector);
-            var adjustedDirAngle = (dirAngle - this.direction);
-            if (adjustedDirAngle < 0) {
-                adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
-            }
-
-            return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2, transformedArrow.y,
-                adjustedDirAngle, this.animations);
+            //var dirAngle = getAngle(playerImpVector);
+            //console.log(dirAngle);
+            //console.log(this.direction);
+            //var adjustedDirAngle = (dirAngle - this.direction);
+            //if (adjustedDirAngle < 0) {
+            //    adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
+            //}
+            //console.log(adjustedDirAngle);
+            console.log(this.direction);
+            return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2, this.y,
+                this.direction, this.animations);
         } else return null;
     }
 

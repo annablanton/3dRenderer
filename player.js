@@ -1,7 +1,9 @@
 class Player {
     constructor(game, x, y, direction) {
         var dirVector = new TwoDVector(direction);
-        Object.assign(this, { game, x, y, direction, dirVector });
+        Object.assign(this, { game, direction, dirVector });
+        this.x = 2 + x * 4;
+        this.y = 2 + y * 4;
         //console.log(this.game);
         this.VECTOR_SCALE = 20;
         this.PLAYER_SIZE = 4;
@@ -42,7 +44,7 @@ class Player {
         if (this.game.space && this.spaceReleased) {
             this.spaceReleased = false;
             this.game.addEntity(new Arrow(this.game, this.x, this.y, this.direction));
-            console.log(this.direction);
+            //console.log(this.direction);
         } else if (!this.game.space) {
             this.spaceReleased = true;
         }
@@ -62,10 +64,10 @@ class Player {
             }
         });
 
-        if (this.direction > Math.PI) {
-            this.direction = this.direction - 2 * Math.PI;
-        } else if (this.direction < -Math.PI) {
-            this.direction = this.direction + 2 * Math.PI;
+        if (this.direction < 0) {
+            this.updateDirection(2 * Math.PI - 2 * this.direction);
+        } else if (this.direction > 2 * Math.PI) {
+            this.updateDirection(-2 * Math.PI);
         }
         this.x += this.velocity.x * TICK;
         this.y += this.velocity.y * TICK;

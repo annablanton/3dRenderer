@@ -1,7 +1,7 @@
 // This game shell was happily modified from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 
 class GameEngine {
-    constructor() {
+    constructor(size) {
         this.entities = [];
         this.showOutlines = false;
         this.mapCtx = null;
@@ -31,9 +31,19 @@ class GameEngine {
 
         this.entities = [];
         this.walls = [];
+        this.dungeon = [];
+        for (var i = 0; i < size; i++) {
+            this.dungeon.push([]);
+        }
+
+        for (var i = 0; i < size; i++) {
+            for (var j = 0; j < size; j++) {
+                this.dungeon[i][j] = new Tile();
+            }
+        }
     };
 
-    init(mapCtx, intCtx, threeDCtx) {
+    init(mapCtx, intCtx, threeDCtx, size) {
         this.mapCtx = mapCtx;
         this.intCtx = intCtx;
         this.threeDCtx = threeDCtx;
@@ -173,28 +183,31 @@ class GameEngine {
         this.threeDCtx.fillStyle = "darkgrey";
         this.threeDCtx.fillRect(0, CANVAS_HEIGHT/2, CANVAS_WIDTH, CANVAS_HEIGHT /2);
         this.mapCtx.save();
-
-        var transEntities = [];
-
+        //console.log(this.entities)
+        var bsp = new BSPTree(this.entities);
+        //console.log(bsp);
         var matrix = frameRotationMatrix(this);
+        var transEntities = bsp.bspSort(this.player, matrix);
 
         for (var i = 0; i < this.entities.length; i++) {
             this.entities[i].draw(this.mapCtx);
-            var nextEntity = this.entities[i].getTransform(this.intCtx, matrix);
-            if (nextEntity !== null) {
-                transEntities.push(nextEntity);
-            }
         }
-
-        var dg = digraphFromWalls(transEntities);
-        var sortedEntities = topologicalSort(dg);
-
-        for (var i = 0; i < sortedEntities.length; i++) {
-            var nextEntity = sortedEntities[i];
-            if (nextEntity != null) {
+        //console.log(transEntities);
+        for (var i = 0; i < transEntities.length; i++) {
+            //transEntities[i].draw(this.mapCtx);
+            var nextEntity = transEntities[i].getTransform(this.intCtx);
+            if (nextEntity) {
                 nextEntity.fpDraw(this.threeDCtx);
             }
         }
+
+        //for (var i = 0; i < sortedEntities.length; i++) {
+        //    var nextEntity = sortedEntities[i];
+        //    if (nextEntity) nextEntity = nextEntity.getTransform(this.intCtx);
+        //    if (nextEntity != null) {
+        //        nextEntity.fpDraw(this.threeDCtx);
+        //    }
+        //}
 
         this.hud.fpDraw(this.threeDCtx);
 

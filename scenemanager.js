@@ -1,24 +1,27 @@
 class SceneManager {
     constructor(game) {
         this.game = game;
-        this.player = new Player(game, -100, 100, 0);
+        this.player = new Player(game, 0, 17, 0);
         this.game.hud = this;
-
-        game.addEntity(new Wall(game, new Point(-18, 0), new Point(0, 0), "Black"));
-        game.addEntity(new Wall(game, new Point(0, 0), new Point(0, -18), "Red"));
-        game.addEntity(new Wall(game, new Point(0, -18), new Point(-5, -18), "Blue"));
-        game.addEntity(new Wall(game, new Point(-13, -18), new Point(-18, -18), "Blue"));
-        game.addEntity(new Wall(game, new Point(-13, -18), new Point(-13, -36), "Blue"));
-        game.addEntity(new Wall(game, new Point(-5, -18), new Point(-5, -36), "Blue"));
-        game.addEntity(new Wall(game, new Point(-18, -18), new Point(-18, 0), "Green"));
-        game.addEntity(new Imp(game, -9, -9, Math.PI));
-        game.addEntity(new Chicken(game, 5, 5));
         game.addEntity(this.player);
-        game.addEntity(this);
+
+        game.addEntity(new DungeonWall(game, 0, 18, 'x', 9, "Black"));
+        game.addEntity(new DungeonWall(game, 9, 18, 'y', 9, "Red"));
+        game.addEntity(new DungeonWall(game, 9, 9, 'x', 7, "Blue"));
+        game.addEntity(new DungeonWall(game, 3, 9, 'x', 0, "Blue"));
+        game.addEntity(new DungeonWall(game, 3, 9, 'y', 0, "Blue"));
+        game.addEntity(new DungeonWall(game, 7, 9, 'y', 0, "Blue"));
+        game.addEntity(new DungeonWall(game, 0, 9, 'y', 18, "Green"));
+        game.addEntity(new DungeonImp(game, 5, 5, Math.PI));
+        //game.addEntity(new Chicken(game, 5, 5));
 
     };
 
-    getTransform(intCtx, matrix) {
+    getRotation(matrix) {
+
+    }
+
+    getTransform(intCtx) {
 
     }
 

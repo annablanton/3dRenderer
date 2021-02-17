@@ -20,7 +20,7 @@ ASSET_MANAGER.downloadAll(function () {
     mapCtx.fillStyle = "Black";
     mapCtx.translate(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
 
-    var GAME_ENGINE = new GameEngine();
+    var GAME_ENGINE = new GameEngine(100);
     //var mapModel = new Map(GAME_ENGINE, player, mapGraph);
     var intermediate = document.getElementById("intermediate");
     intermediate.height = CANVAS_HEIGHT;
