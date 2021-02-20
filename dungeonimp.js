@@ -27,6 +27,7 @@ class DungeonImp {
         this.p2 = new Point(this.x - this.radius * Math.cos(this.game.player.direction + Math.PI / 2), this.y - this.radius * Math.sin(this.game.player.direction + Math.PI / 2));
         this.aggressive = true;
         this.target = new Point(this.game.player.xArr, this.game.player.yArr);
+        this.nextOccupied = null;
         //this.path = this.aStar(this.target);
         //this.initialPath = [];
         //for (var i = 0; i < this.path.length; i++) {
@@ -137,18 +138,22 @@ class DungeonImp {
                 if (this.nextDir == 'north' && !this.occupied.top) {
                     this.destination = new Point(this.x, this.y - 2);
                     this.game.dungeon[this.yArr - 1][this.xArr].enter();
+                    this.nextOccupied = this.game.dungeon[this.yArr - 1][this.xArr];
                     this.moving = true;
                 } else if (this.nextDir == 'east' && !this.occupied.right) {
                     this.destination = new Point(this.x + 2, this.y);
-                    this.game.dungeon[this.yArr][this.xArr+1].enter();
+                    this.game.dungeon[this.yArr][this.xArr + 1].enter();
+                    this.nextOccupied = this.game.dungeon[this.yArr][this.xArr + 1];
                     this.moving = true;
                 } else if (this.nextDir == 'south' && !this.occupied.bottom) {
                     this.destination = new Point(this.x, this.y + 2);
-                    this.game.dungeon[this.yArr +1][this.xArr].enter();
+                    this.game.dungeon[this.yArr + 1][this.xArr].enter();
+                    this.nextOccupied = this.game.dungeon[this.yArr + 1][this.xArr];
                     this.moving = true;
                 } else if (!this.occupied.left) {
                     this.destination = new Point(this.x - 2, this.y);
                     this.game.dungeon[this.yArr][this.xArr - 1].enter();
+                    this.nextOccupied = this.game.dungeon[this.yArr][this.xArr - 1];
                     this.moving = true;
                 }
                 //this.destination = new Point(1 + this.nextLoc.x * 2, 1 + this.nextLoc.y * 2);
@@ -165,6 +170,11 @@ class DungeonImp {
         }
 
 
+    }
+
+    cleanMap() {
+        this.occupied.leave();
+        if (this.nextOccupied) this.nextOccupied.leave();
     }
 
     draw(ctx) {

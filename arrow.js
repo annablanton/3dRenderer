@@ -12,10 +12,11 @@ class Arrow {
 
         this.action = 0; //0 = walk, 1 = fire, 2 = die
         this.animations = [];
-        this.lifetime = 10;
+        this.lifetime = 1000;
         this.timeElapsed = 0;
         this.SCALE = 600;
         this.SPEED = 100;
+
 
 
         for (var i = 0; i < 3; i++) {
@@ -38,8 +39,8 @@ class Arrow {
             this.removeFromWorld = true;
         }
         this.lastLocation = new Point(this.x, this.y);
-        this.x += this.game.clockTick * this.SPEED * Math.cos(this.direction);
-        this.y += this.game.clockTick * this.SPEED * Math.sin(this.direction);
+        this.updateX(this.x + this.game.clockTick * this.SPEED * Math.cos(this.direction));
+        this.updateY(this.y + this.game.clockTick * this.SPEED * Math.sin(this.direction));
 
         var that = this;
         this.game.entities.forEach(function (entity) {
@@ -59,6 +60,18 @@ class Arrow {
     draw(ctx) {
         //console.log(this.direction);
         ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
+    }
+
+    updateX(x) {
+        this.x = x;
+        this.p1.x = this.x + this.radius * Math.cos(this.game.player.direction + Math.PI / 2);
+        this.p2.x = this.x - this.radius * Math.cos(this.game.player.direction + Math.PI / 2);
+    }
+
+    updateY(y) {
+        this.y = y;
+        this.p1.y = this.y + this.radius * Math.sin(this.game.player.direction + Math.PI / 2)
+        this.p2.y = this.y - this.radius * Math.sin(this.game.player.direction + Math.PI / 2)
     }
 
     collide(other) {
