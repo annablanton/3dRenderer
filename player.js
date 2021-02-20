@@ -2,16 +2,22 @@ class Player {
     constructor(game, x, y, direction) {
         var dirVector = new TwoDVector(direction);
         Object.assign(this, { game, direction, dirVector });
-        this.x = 2 + x * 4;
-        this.y = 2 + y * 4;
+        this.xArr = x;
+        this.yArr = y;
+        this.x = 1 + x * 2;
+        this.y = 1 + y * 2;
         //console.log(this.game);
         this.VECTOR_SCALE = 20;
         this.PLAYER_SIZE = 4;
         this.velocity = { x: 0, y: 0 };
-        this.SPEED = 50;
+        this.SPEED = 7;
         this.TURN_SPEED = Math.PI / 2;
         this.radius = 1;
-        this.spaceReleased = true;
+        this.clickReleased = true;
+        this.occupied = this.game.dungeon[this.yArr][this.xArr];
+        this.occupied.enter();
+        console.log(this.game.dungeon[this.yArr][this.xArr]);
+        this.destination = new Point(this.x, this.y);
 
         //this.game.player = this;
     }
@@ -19,34 +25,69 @@ class Player {
     update() {
         this.velocity.x = 0;
         this.velocity.y = 0;
+        
         const TICK = this.game.clockTick;
-        if (this.game.up && !this.game.down) {
-            this.velocity.y += Math.sin(this.direction) * this.SPEED;
-            this.velocity.x += Math.cos(this.direction) * this.SPEED;
-        } else if (this.game.down && !this.game.up) {
-            this.velocity.y += -Math.sin(this.direction) * this.SPEED;
-            this.velocity.x += -Math.cos(this.direction) * this.SPEED;
-        } else {
-            this.velocity.y += 0;
-            this.velocity.x += 0;
-        }
-        if (this.game.right && !this.game.left) {
-            this.velocity.y += Math.sin(this.direction + Math.PI / 2) * this.SPEED;
-            this.velocity.x += Math.cos(this.direction + Math.PI / 2) * this.SPEED;
-        } else if (this.game.left && !this.game.right) {
-            this.velocity.y += Math.sin(this.direction - Math.PI / 2) * this.SPEED;
-            this.velocity.x += Math.cos(this.direction - Math.PI / 2) * this.SPEED;
-        } else {
-            this.velocity.x += 0;
-            this.velocity.y += 0;
+        if (!this.moving) {
+            if (this.game.up && !this.game.down) {
+                this.up();
+            } else if (this.game.down && !this.game.up) {
+                this.down();
+            } else if (this.game.right && !this.game.left) {
+                this.right();
+            } else if (this.game.left && !this.game.right) {
+                this.left();
+            }
         }
 
-        if (this.game.space && this.spaceReleased) {
-            this.spaceReleased = false;
+        if (this.destination.x < this.x) {
+            this.x -= this.SPEED * this.game.clockTick;
+            if (this.destination.x >= this.x) {
+                this.x = this.destination.x;
+                this.occupied.leave();
+                this.xArr--;
+                this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                //this.occupied.enter();
+                this.moving = false;
+            }
+        } else if (this.destination.x > this.x) {
+            this.x += this.SPEED * this.game.clockTick;
+            if (this.destination.x < this.x) {
+                this.x = this.destination.x;
+                this.occupied.leave();
+                this.xArr++;
+                this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                //this.occupied.enter();
+                this.moving = false;
+            }
+        } else if (this.destination.y < this.y) {
+            this.y -= this.SPEED * this.game.clockTick;
+            if (this.destination.y > this.y) {
+                this.y = this.destination.y;
+                this.occupied.leave();
+                this.yArr--;
+                this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                //this.occupied.enter();
+                this.moving = false;
+            }
+        } else if (this.destination.y > this.y) {
+            this.y += this.SPEED * this.game.clockTick;
+            if (this.destination.y < this.y) {
+                this.y = this.destination.y;
+                this.occupied.leave();
+                this.yArr++;
+                this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                //this.occupied.enter();
+                this.moving = false;
+            }
+        }
+        //console.log(this.game.clickReleased);
+
+        if (this.game.click && this.clickReleased) {
+            this.clickReleased = false;
             this.game.addEntity(new Arrow(this.game, this.x, this.y, this.direction));
             //console.log(this.direction);
-        } else if (!this.game.space) {
-            this.spaceReleased = true;
+        } else if (!this.game.click) {
+            this.clickReleased = true;
         }
 
         if (this.game.turnLeft && !this.game.turnRight) this.updateDirection(-this.TURN_SPEED * TICK);
@@ -71,6 +112,102 @@ class Player {
         }
         this.x += this.velocity.x * TICK;
         this.y += this.velocity.y * TICK;
+    }
+
+    up() {
+        this.moving = true;
+        if (this.direction <= Math.PI / 4 || this.direction >= 7 * Math.PI / 4) {
+            this.east();
+        } else if (this.direction <= 3 * Math.PI / 4) {
+            this.south();
+        } else if (this.direction <= 5 * Math.PI / 4) {
+            this.west();
+        } else if (this.direction <= 7 * Math.PI / 4) {
+            this.north();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    right() {
+        this.moving = true;
+        if (this.direction <= Math.PI / 4 || this.direction >= 7 * Math.PI / 4) {
+            this.south();
+        } else if (this.direction <= 3 * Math.PI / 4) {
+            this.west();
+        } else if (this.direction <= 5 * Math.PI / 4) {
+            this.north();
+        } else if (this.direction <= 7 * Math.PI / 4) {
+            this.east();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    down() {
+        this.moving = true;
+        if (this.direction <= Math.PI / 4 || this.direction >= 7 * Math.PI / 4) {
+            this.west();
+        } else if (this.direction <= 3 * Math.PI / 4) {
+            this.north();
+        } else if (this.direction <= 5 * Math.PI / 4) {
+            this.east();
+        } else if (this.direction <= 7 * Math.PI / 4) {
+            this.south();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    left() {
+        this.moving = true;
+        if (this.direction <= Math.PI / 4 || this.direction >= 7 * Math.PI / 4) {
+            this.north();
+        } else if (this.direction <= 3 * Math.PI / 4) {
+            this.east();
+        } else if (this.direction <= 5 * Math.PI / 4) {
+            this.south();
+        } else if (this.direction <= 7 * Math.PI / 4) {
+            this.west();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    north() {
+        if (!this.occupied.top && this.yArr - 1 >= 0 && !this.game.dungeon[this.yArr - 1][this.xArr].occupied) {
+            this.destination = new Point(this.x, this.y - 2);
+            this.game.dungeon[this.yArr - 1][this.xArr].enter();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    east() {
+        if (!this.occupied.right && this.xArr + 1 < this.game.dungeon[this.yArr].length && !this.game.dungeon[this.yArr][this.xArr + 1].occupied) {
+            this.destination = new Point(this.x + 2, this.y);
+            this.game.dungeon[this.yArr][this.xArr + 1].enter();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    south() {
+        if (!this.occupied.bottom && this.yArr + 1 < this.game.dungeon.length && !this.game.dungeon[this.yArr + 1][this.xArr].occupied) {
+            this.destination = new Point(this.x, this.y + 2);
+            this.game.dungeon[this.yArr + 1][this.xArr].enter();
+        } else {
+            this.moving = false;
+        }
+    }
+
+    west() {
+        if (!this.occupied.left && this.xArr - 1 >= 0 && !this.game.dungeon[this.yArr][this.xArr - 1].occupied) {
+            this.destination = new Point(this.x - 2, this.y);
+            this.game.dungeon[this.yArr][this.xArr - 1].enter();
+        } else {
+            this.moving = false;
+        }
     }
 
     updateDirection(rads) {

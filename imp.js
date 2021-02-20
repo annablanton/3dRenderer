@@ -4,7 +4,7 @@ class Imp {
         //console.log(this.animations);
 
         this.action = 0; //0 = walk, 1 = fire, 2 = die
-        this.radius = 1;
+        this.radius = 0.5;
         this.p1 = new Point(this.x - PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.p2 = new Point(this.x + PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.testWall = new Wall(this.game, this.p1, this.p2, 'Black');

@@ -1,35 +1,39 @@
 class DungeonWall {
     constructor(game, startX, startY, axis, endCoord, color, bsp) {
-        this.p1 = new Point(startX * 4, startY * 4);
-        if (axis == 'x') this.p2 = new Point(endCoord * 4, startY * 4);
-        else this.p2 = new Point(startX * 4, endCoord * 4);
+        this.p1 = new Point(startX * 2, startY * 2);
+        if (axis == 'x') this.p2 = new Point(endCoord * 2, startY * 2);
+        else this.p2 = new Point(startX * 2, endCoord * 2);
         Object.assign(this, { game, color, axis })
         this.lineCollision = true;
         if (axis == 'x') {
+            var lowerX = Math.min(startX, endCoord);
+            var upperX = Math.max(startX, endCoord);
             if (startY - 1 >= 0) {
-                for (var j = startX; j < endCoord; j++) {
+                for (var j = lowerX; j < upperX; j++) {
                     this.game.dungeon[startY][j].addWall('top');
                     this.game.dungeon[startY - 1][j].addWall('bottom');
                 }
             } else {
-                for (var j = startX; j < endCoord; j++) {
+                for (var j = lowerX; j < upperX; j++) {
                     this.game.dungeon[startY][j].addWall('top');
                 }
             }
         } else {
+            var lowerY = Math.min(startY, endCoord);
+            var upperY = Math.max(startY, endCoord);
             if (startX - 1 >= 0) {
-                for (var i = startY; i < endCoord; i++) {
+                for (var i = lowerY; i < upperY; i++) {
                     this.game.dungeon[i][startX].addWall("left");
                     this.game.dungeon[i][startX - 1].addWall("right");
                 }
             } else {
-                for (var i = startY; i < endCoord; i++) {
+                for (var i = lowerY; i < upperY; i++) {
                     this.game.dungeon[i][startX].addWall("left");
                 }
             }
         }
 
-        //console.log(this.game.dungeon);
+        console.log(this.game.dungeon);
     }
 
     update() {

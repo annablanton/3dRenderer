@@ -5,7 +5,7 @@ class Arrow {
         //console.log(this.direction);
         //console.log(this.spritesheet);
         
-        this.radius = 0.25;
+        this.radius = 0.1;
         this.p1 = new Point(this.x - PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.p2 = new Point(this.x + PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
         this.testWall = new Wall(this.game, this.p1, this.p2, 'Black');

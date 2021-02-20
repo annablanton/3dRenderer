@@ -6,7 +6,7 @@ class GameEngine {
         this.showOutlines = false;
         this.mapCtx = null;
         this.intCtx = null;
-        this.click = null;
+        this.click = false;
         this.mouse = null;
         this.wheel = null;
         this.surfaceWidth = null;
@@ -28,6 +28,8 @@ class GameEngine {
         this.EXP_SCALE = 22;
         this.EXP_EQ = 2 ** (1 / 200) * 5 ** (1 / 400);
         this.X_CLAMP = 50;
+
+        this.lastE = 0;
 
         this.entities = [];
         this.walls = [];
@@ -74,11 +76,6 @@ class GameEngine {
         this.threeDCtx.canvas.addEventListener("mousemove", function (e) {
             //console.log(getXandY(e));
             that.mouse = getXandY(e);
-        }, false);
-
-        this.threeDCtx.canvas.addEventListener("click", function (e) {
-            //console.log(getXandY(e));
-            that.click = getXandY(e);
         }, false);
 
         this.threeDCtx.canvas.addEventListener("wheel", function (e) {
@@ -146,7 +143,32 @@ class GameEngine {
                     that.space = false;
             }
         });
-        var that = this;
+        var onMouseDown = (e) => {
+            switch (e.button) {
+                case 0:
+                    that.click = true;
+                    break;
+            }
+        }
+        this.threeDCtx.canvas.addEventListener("mousedown", onMouseDown, false);
+        var onMouseDown = (e) => {
+            switch (e.which) {
+                case 0:
+                    that.click = true;
+                    break;
+            }
+        }
+        var onMouseUp = (e) => {
+            switch (e.button) {
+                case 0:
+                    console.log(that.click);
+                    that.click = false;
+                    console.log(that.click);
+                    break;
+            }
+        }
+
+        this.threeDCtx.canvas.addEventListener("mouseup", onMouseUp, false);
         function lockChangeAlert() {
             if (document.pointerLockElement === that.threeDCtx.canvas ||
                 document.mozPointerLockElement === that.threeDCtx.canvas) {
@@ -157,9 +179,10 @@ class GameEngine {
                 that.threeDCtx.canvas.removeEventListener("mousemove", updatePosition, false);
             }
         }
-
+        var that = this;
         function updatePosition(e) {
-            that.player.updateDirection(e.movementX / 400);
+            if (!(that.lastE < 0 && e.movementX > 0) && !(that.lastE > 0 && e.movementX < 0)) that.player.updateDirection(e.movementX / 400);
+            that.lastE = e.movementX;
         }
 
         document.addEventListener("pointerlockchange", lockChangeAlert, false);
@@ -215,6 +238,7 @@ class GameEngine {
     };
 
     update() {
+        //console.log(this.click);
         PARAMS.DEBUG = document.getElementById("debug").checked;
         var entitiesCount = this.entities.length;
 

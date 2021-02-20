@@ -1,7 +1,7 @@
 var CANVAS_WIDTH = 1200;
 var CANVAS_HEIGHT = 800;
 var PRE_SCALE = 50;
-var POST_SCALE = 800;
+var POST_SCALE = 1200;
 
 function getRandomMagnitude(n) {
     return randomInt(n) - n / 2;
