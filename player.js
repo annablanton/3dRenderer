@@ -19,24 +19,39 @@ class Player {
         console.log(this.game.dungeon[this.yArr][this.xArr]);
         this.destination = new Point(this.x, this.y);
 
+        this.upReleased = true;
+        this.downReleased = true;
+        this.rightReleased = true;
+        this.leftReleased = true;
+
         //this.game.player = this;
     }
 
     update() {
         this.velocity.x = 0;
         this.velocity.y = 0;
+
+
         
         const TICK = this.game.clockTick;
         if (!this.moving) {
-            if (this.game.up && !this.game.down) {
+            if (this.game.up && !this.game.down && this.upReleased) {
                 this.up();
-            } else if (this.game.down && !this.game.up) {
+                this.upReleased = false;
+            } else if (this.game.down && !this.game.up && this.downReleased) {
                 this.down();
-            } else if (this.game.right && !this.game.left) {
+                this.downReleased = false;
+            } else if (this.game.right && !this.game.left && this.rightReleased) {
                 this.right();
-            } else if (this.game.left && !this.game.right) {
+                this.rightReleased = false;
+            } else if (this.game.left && !this.game.right && this.leftReleased) {
                 this.left();
-            }
+                this.leftReleased = false;
+            } 
+            if (!this.game.up) this.upReleased = true;
+            if (!this.game.down) this.downReleased = true;
+            if (!this.game.left) this.leftReleased = true;
+            if (!this.game.right) this.rightReleased = true;
         }
 
         if (this.destination.x < this.x) {
