@@ -4,7 +4,7 @@ class BSPTree {
         else {
             var rootWall = entities[Math.floor(entities.length / 2)];
             if (rootWall instanceof Wall || rootWall instanceof DungeonWall) this.root = new Wall(rootWall.game, rootWall.p1, rootWall.p2, rootWall.color);
-            else if (rootWall instanceof Imp || rootWall instanceof DungeonImp) this.root = new Imp(rootWall.game, rootWall.x, rootWall.y, rootWall.direction, rootWall.animations);
+            else if (rootWall instanceof Imp || rootWall instanceof DungeonImp) this.root = new Imp(rootWall.game, rootWall.x, rootWall.y, rootWall.direction, rootWall.animations, rootWall.action, rootWall.attackTimer);
             else if (rootWall instanceof Arrow) this.root = new Arrow(rootWall.game, rootWall.x, rootWall.y, rootWall.direction, rootWall.animations);
             var backEntities = [];
             var frontEntities = [];
@@ -23,7 +23,7 @@ class BSPTree {
                         if (wall instanceof DungeonWall || wall instanceof Wall) {
                             frontEntities.push(new Wall(wall.game, wall.p1, wall.p2, wall.color));
                         } else if (wall instanceof DungeonImp || wall instanceof Imp) {
-                            frontEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations));
+                            frontEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations, wall.action, wall.attackTimer));
                         } else if (wall instanceof Arrow) {
                             frontEntities.push(new Arrow(wall.game, wall.x, wall.y, wall.direction, wall.animations));
                         }
@@ -45,7 +45,7 @@ class BSPTree {
                         if (wall instanceof DungeonWall || wall instanceof Wall) {
                             backEntities.push(new Wall(wall.game, wall.p1, wall.p2, wall.color));
                         } else if (wall instanceof DungeonImp || wall instanceof Imp) {
-                            backEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations));
+                            backEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations, wall.action, wall.attackTimer));
                         } else if (wall instanceof Arrow) {
                             backEntities.push(new Arrow(wall.game, wall.x, wall.y, wall.direction));
                         }

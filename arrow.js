@@ -33,7 +33,6 @@ class Arrow {
     }
 
     update() {
-        //console.log("arrow update");
         this.timeElapsed += this.game.clockTick;
         if (this.timeElapsed > this.lifetime) {
             this.removeFromWorld = true;
@@ -47,7 +46,7 @@ class Arrow {
             if (entity !== that && entity.radius && that.collide(entity)) {
                 if (entity instanceof DungeonImp) {
                     that.removeFromWorld = true;
-                    entity.removeFromWorld = true;
+                    entity.health -= 2;
                 }
             }
 
@@ -58,7 +57,6 @@ class Arrow {
     }
 
     draw(ctx) {
-        //console.log(this.direction);
         ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
     }
 
@@ -102,43 +100,14 @@ class Arrow {
 
     getRotation(matrix) {
         return transformEntity(this.game, this, matrix, Arrow);
-
-        //console.log(transformedArrow);
-
-        //if (transformedArrow.y <= CANVAS_HEIGHT / 2) {
-        //    //intCtx.fillRect(transformedArrow.x - 2, transformedArrow.y - 2, 4, 4);
-        //    //console.log(p);
-        //    intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2 - 2, transformedArrow.y - 2, 4, 4);
-
-        //    var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
-        //    playerImpVector.normalize();
-        //    var dirAngle = getAngle(playerImpVector);
-        //    var adjustedDirAngle = (dirAngle - this.direction);
-        //    if (adjustedDirAngle < 0) {
-        //        adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
-        //    }
-
-        //    return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - transformedArrow.x) / ((400 - transformedArrow.y) + 2) + CANVAS_WIDTH / 2, transformedArrow.y,
-        //        adjustedDirAngle, this.animations);
-        //} else return null;
     }
 
     getTransform(intCtx) {
         if (this.y <= CANVAS_HEIGHT / 2) {
-            //intCtx.fillRect(this.x - 2, this.y - 2, 4, 4);
-            //console.log(p);
             intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2 - 2, this.y - 2, 4, 4);
 
             var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
             playerImpVector.normalize();
-            //var dirAngle = getAngle(playerImpVector);
-            //console.log(dirAngle);
-            //console.log(this.direction);
-            //var adjustedDirAngle = (dirAngle - this.direction);
-            //if (adjustedDirAngle < 0) {
-            //    adjustedDirAngle = 2 * Math.PI + adjustedDirAngle;
-            //}
-            //console.log(adjustedDirAngle);
             console.log(this.direction);
             return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2, this.y,
                 this.direction, this.animations);
@@ -152,12 +121,6 @@ class Arrow {
 
         if (this.y <= CANVAS_HEIGHT / 2) {
             if (PARAMS.DEBUG) this.testWall.fpDraw(threeDCtx);
-            //intCtx.fillRect(transformedArrow.x - 2, transformedArrow.y - 2, 4, 4);
-            //console.log(p);
-            //intCtx.fillRect(transformedArrow.x - 2, transformedArrow.y - 2, 4, 4);
-
-
-            //console.log(adjustedDirAngle);
             if (this.direction <= Math.PI / 8 || this.direction >= 15 * Math.PI / 8) {
                 this.animations[0][4].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/10)) / 2 + CANVAS_WIDTH / 2,
                     -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));

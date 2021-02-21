@@ -28,6 +28,18 @@ class SceneManager {
     fpDraw(threeDCtx) {
         threeDCtx.fillStyle = "Purple";
         threeDCtx.fillRect(CANVAS_WIDTH / 2 - 3, CANVAS_HEIGHT / 2 - 3, 6, 6);
+        threeDCtx.fillStyle = "Black";
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 - 50, CANVAS_HEIGHT - 40, 100, 2);
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 - 55, CANVAS_HEIGHT - 40, 5, 14);
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 - 50, CANVAS_HEIGHT - 28, 100, 2);
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 + 50, CANVAS_HEIGHT - 40, 5, 14);
+        threeDCtx.fillStyle = "Green";
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 - 50, CANVAS_HEIGHT - 38, this.player.health, 10);
+        threeDCtx.fillStyle = "Purple";
+        threeDCtx.save();
+        threeDCtx.globalAlpha = 0.5;
+        threeDCtx.fillRect(CANVAS_WIDTH / 2 - 25, CANVAS_HEIGHT - 55, this.player.fireTimer * 50, 10);
+        threeDCtx.restore();
     }
 
     update() {

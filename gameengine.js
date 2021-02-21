@@ -181,7 +181,7 @@ class GameEngine {
         }
         var that = this;
         function updatePosition(e) {
-            if (Math.abs(e.movementX - that.lastE) < 100) that.player.updateDirection(e.movementX / 400);
+            if (Math.abs(e.movementX - that.lastE) < 100 && that.player.health > 0) that.player.updateDirection(e.movementX / 400);
             that.lastE = e.movementX;
         }
 

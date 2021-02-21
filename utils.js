@@ -118,7 +118,7 @@ function distance(x1, y1, x2, y2) {
     return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 }
 
-function transformEntity(game, entity, matrix, constr, animations) {
+function transformEntity(game, entity, matrix, constr, animations, action, attackTimer) {
     var homogVec = [entity.x, entity.y, 1];
     var transformedVec = matByVec(matrix, homogVec);
     //console.log(transformedVec);
@@ -133,7 +133,7 @@ function transformEntity(game, entity, matrix, constr, animations) {
 
     //var homogVec2 = [this.p2.x, this.p2.y, 1];
     //var transformedVec2 = matByVec(matArray, homogVec2);
-    return new constr(game, transformedVec.x, transformedVec.y, adjustedDirAngle, animations);
+    return new constr(game, transformedVec.x, transformedVec.y, adjustedDirAngle, animations, action, attackTimer);
 }
 
 function findIntersect(wall1Origin, wall2Origin, wall1Vector, wall2Vector) {

@@ -6,12 +6,15 @@ class DungeonImp {
         this.xArr = x;
         this.yArr = y;
         this.MOONWALK = false;
+        this.ATTACK_TIME = 0.6;
+        this.attackTimer = 0;
         this.occupied = this.game.dungeon[this.yArr][this.xArr];
         this.occupied.enter();
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/imp.png");
-        this.SPEED = 5;
+        this.SPEED = 3;
         this.animations = [];
         this.radius = 0.5;
+        this.action = 0;
         for (var i = 0; i < 3; i++) {
             this.animations.push([]);
         }
@@ -20,14 +23,23 @@ class DungeonImp {
         this.animations[0].push(new Animator(this.spritesheet, 3, 127, 39, 53, 4, 0.2, 2, false, true));
         this.animations[0].push(new Animator(this.spritesheet, 3, 183, 34, 51, 4, 0.2, 3, false, true));
         this.animations[0].push(new Animator(this.spritesheet, 4, 237, 35, 50, 4, 0.2, 3, false, true));
-        this.animations[0].push(new Animator(this.spritesheet, 535, 183, 34, 51, 4, 0.2, 3, true, true));
-        this.animations[0].push(new Animator(this.spritesheet, 517, 127, 39, 53, 4, 0.2, 2, true, true));
-        this.animations[0].push(new Animator(this.spritesheet, 486, 66, 46, 59, 4, 0.2, 3, true, true));
+        this.animations[0].push(new Animator(this.spritesheet, 551, 183, 34, 51, 4, 0.2, 3, true, true));
+        this.animations[0].push(new Animator(this.spritesheet, 547, 127, 39, 53, 4, 0.2, 2, true, true));
+        this.animations[0].push(new Animator(this.spritesheet, 553, 66, 46, 59, 4, 0.2, 3, true, true));
+        this.animations[1].push(new Animator(this.spritesheet, 182, 3, 49, 60, 3, 0.2, 1, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 208, 66, 55, 60, 3, 0.2, 1, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 166, 127, 59, 53, 3, 0.2, 1, false, true)); 
+        this.animations[1].push(new Animator(this.spritesheet, 152, 183, 46, 51, 3, 0.2, 1, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 154, 237, 38, 50, 3, 0.2, 1, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 404, 183, 46, 51, 3, 0.2, 1, false, true));
+        this.animations[1].push(new Animator(this.spritesheet, 367, 127, 59, 53, 3, 0.2, 1, true, true));
+        this.animations[1].push(new Animator(this.spritesheet, 381, 65, 55, 59, 3, 0.2, 1, true, true));
         this.p1 = new Point(this.x + this.radius * Math.cos(this.game.player.direction + Math.PI / 2), this.y + this.radius * Math.sin(this.game.player.direction + Math.PI / 2));
         this.p2 = new Point(this.x - this.radius * Math.cos(this.game.player.direction + Math.PI / 2), this.y - this.radius * Math.sin(this.game.player.direction + Math.PI / 2));
         this.aggressive = true;
         this.target = new Point(this.game.player.xArr, this.game.player.yArr);
         this.nextOccupied = null;
+        this.health = 6;
         //this.path = this.aStar(this.target);
         //this.initialPath = [];
         //for (var i = 0; i < this.path.length; i++) {
@@ -63,109 +75,121 @@ class DungeonImp {
     }
 
     update() {
-        //console.log(this.destination);
-        if (this.destination.x < this.x) {
-            this.updateX(this.x - this.SPEED * this.game.clockTick);
-            if (this.MOONWALK) this.direction = Math.PI;
-            else this.direction = 0;
-            if (this.destination.x >= this.x) {
-                this.updateX(this.destination.x);
-                this.occupied.leave();
-                this.xArr--;
-                this.occupied = this.game.dungeon[this.yArr][this.xArr];
-                //this.occupied.enter();
-                this.moving = false;
-            }
-        } else if (this.destination.x > this.x) {
-            this.updateX(this.x + this.SPEED * this.game.clockTick);
-            if (this.MOONWALK) this.direction = 0;
-            else this.direction = Math.PI;
-            if (this.destination.x <= this.x) {
-                this.updateX(this.destination.x);
-                this.occupied.leave();
-                this.xArr++;
-                this.occupied = this.game.dungeon[this.yArr][this.xArr];
-                //this.occupied.enter();
-                this.moving = false;
-            }
-        } else if (this.destination.y < this.y) {
-            this.updateY(this.y - this.SPEED * this.game.clockTick);
-            if (this.MOONWALK) this.direction = 3 * Math.PI / 2;
-            else this.direction = Math.PI / 2;
-            if (this.destination.y >= this.y) {
-                this.updateY(this.destination.y);
-                this.occupied.leave();
-                this.yArr--;
-                this.occupied = this.game.dungeon[this.yArr][this.xArr];
-                //this.occupied.enter();
-                this.moving = false;
-            }
-        } else if (this.destination.y > this.y) {
-            this.updateY(this.y + this.SPEED * this.game.clockTick);
-            if (this.MOONWALK) this.direction = Math.PI / 2;
-            else this.direction = 3 * Math.PI / 2;
-            if (this.destination.y <= this.y) {
-                this.updateY(this.destination.y);
-                this.occupied.leave();
-                this.yArr++;
-                this.occupied = this.game.dungeon[this.yArr][this.xArr];
-                //this.occupied.enter();
-                this.moving = false;
-            }
-        }
-        if (this.aggressive) {
-            if ((this.target.x != this.game.player.xArr || this.target.y != this.game.player.yArr || this.path == null) && !this.moving) {
-                this.target = new Point(this.game.player.xArr, this.game.player.yArr);
-                this.path = this.aStar(this.target);
-                this.initialPath = [];
-                for (var i = 0; i < this.path.length; i++) {
-                    this.initialPath.push(this.path[i])
+        if (this.health <= 0) this.removeFromWorld = true;
+        else {
+            //console.log(this.destination);
+            if (this.destination.x < this.x) {
+                this.updateX(this.x - this.SPEED * this.game.clockTick);
+                if (this.MOONWALK) this.direction = 0;
+                else this.direction = Math.PI;
+                if (this.destination.x >= this.x) {
+                    this.updateX(this.destination.x);
+                    this.occupied.leave();
+                    this.xArr--;
+                    this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                    //this.occupied.enter();
+                    this.moving = false;
                 }
-
-            }
-            if (this.path && this.path.length && !this.moving) {
-                var nextNodeAndDir = this.path[0];
-                this.path.splice(0, 1);
-                var dir = nextNodeAndDir.dir;
-                var node = nextNodeAndDir.node;
-                var loc = nextNodeAndDir.loc;
-                console.log(dir);
-                console.log(loc);
-                this.nextDir = dir;
-            } else if (!this.path || !this.path.length) this.nextDir = null;
-
-            if (this.nextDir != null && !this.moving) {
-                if (this.nextDir == 'north' && !this.occupied.top) {
-                    this.destination = new Point(this.x, this.y - 2);
-                    this.game.dungeon[this.yArr - 1][this.xArr].enter();
-                    this.nextOccupied = this.game.dungeon[this.yArr - 1][this.xArr];
-                    this.moving = true;
-                } else if (this.nextDir == 'east' && !this.occupied.right) {
-                    this.destination = new Point(this.x + 2, this.y);
-                    this.game.dungeon[this.yArr][this.xArr + 1].enter();
-                    this.nextOccupied = this.game.dungeon[this.yArr][this.xArr + 1];
-                    this.moving = true;
-                } else if (this.nextDir == 'south' && !this.occupied.bottom) {
-                    this.destination = new Point(this.x, this.y + 2);
-                    this.game.dungeon[this.yArr + 1][this.xArr].enter();
-                    this.nextOccupied = this.game.dungeon[this.yArr + 1][this.xArr];
-                    this.moving = true;
-                } else if (!this.occupied.left) {
-                    this.destination = new Point(this.x - 2, this.y);
-                    this.game.dungeon[this.yArr][this.xArr - 1].enter();
-                    this.nextOccupied = this.game.dungeon[this.yArr][this.xArr - 1];
-                    this.moving = true;
+            } else if (this.destination.x > this.x) {
+                this.updateX(this.x + this.SPEED * this.game.clockTick);
+                if (this.MOONWALK) this.direction = Math.PI;
+                else this.direction = 0;
+                if (this.destination.x <= this.x) {
+                    this.updateX(this.destination.x);
+                    this.occupied.leave();
+                    this.xArr++;
+                    this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                    //this.occupied.enter();
+                    this.moving = false;
                 }
-                //this.destination = new Point(1 + this.nextLoc.x * 2, 1 + this.nextLoc.y * 2);
-                //this.moving = true;
+            } else if (this.destination.y < this.y) {
+                this.updateY(this.y - this.SPEED * this.game.clockTick);
+                if (this.MOONWALK) this.direction = Math.PI / 2;
+                else this.direction = 3 * Math.PI / 2;
+                if (this.destination.y >= this.y) {
+                    this.updateY(this.destination.y);
+                    this.occupied.leave();
+                    this.yArr--;
+                    this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                    //this.occupied.enter();
+                    this.moving = false;
+                }
+            } else if (this.destination.y > this.y) {
+                this.updateY(this.y + this.SPEED * this.game.clockTick);
+                if (this.MOONWALK) this.direction = 3 * Math.PI / 2;
+                else this.direction = Math.PI / 2;
+                if (this.destination.y <= this.y) {
+                    this.updateY(this.destination.y);
+                    this.occupied.leave();
+                    this.yArr++;
+                    this.occupied = this.game.dungeon[this.yArr][this.xArr];
+                    //this.occupied.enter();
+                    this.moving = false;
+                }
+            }
+            if (this.aggressive) {
+                if ((this.target.x != this.game.player.xArr || this.target.y != this.game.player.yArr || this.path == null) && !this.moving) {
+                    this.target = new Point(this.game.player.xArr, this.game.player.yArr);
+                    this.path = this.aStar(this.target);
+                    this.initialPath = [];
+                    for (var i = 0; i < this.path.length; i++) {
+                        this.initialPath.push(this.path[i])
+                    }
 
-                //if (this.path && this.path.length) {
-                //    var nextNodeAndDir = this.path[0];
-                //    this.path.splice(0, 1);
-                //    var dir = nextNodeAndDir.dir;
-                //    var loc = nextNodeAndDir.loc;
-                //    this.nextDir = dir;
-                //} else this.nextDir = null;
+                }
+                if (this.path && this.path.length && !this.moving) {
+                    var nextNodeAndDir = this.path[0];
+                    this.path.splice(0, 1);
+                    var dir = nextNodeAndDir.dir;
+                    var node = nextNodeAndDir.node;
+                    var loc = nextNodeAndDir.loc;
+                    console.log(dir);
+                    console.log(loc);
+                    this.nextDir = dir;
+                } else if (!this.path || !this.path.length) this.nextDir = null;
+
+                if (!this.moving && ((this.xArr == this.game.player.xArr - 1 || this.xArr == this.game.player.xArr + 1) && this.yArr == this.game.player.yArr)
+                    || (this.xArr == this.game.player.xArr && (this.yArr == this.game.player.yArr - 1 || this.yArr == this.game.player.yArr + 1))) {
+                    this.action = 1;
+                    if (this.xArr == this.game.player.xArr - 1) this.direction = 0;
+                    else if (this.yArr == this.game.player.yArr - 1) this.direction = Math.PI / 2;
+                    else if (this.xArr == this.game.player.xArr + 1) this.direction = Math.PI;
+                    else this.direction = 3 * Math.PI / 2;
+                    //console.log(this.direction);
+                }
+                else if (this.nextDir != null && !this.moving) {
+                    this.action = 0;
+                    if (this.nextDir == 'north' && !this.occupied.top) {
+                        this.destination = new Point(this.x, this.y - 2);
+                        this.game.dungeon[this.yArr - 1][this.xArr].enter();
+                        this.nextOccupied = this.game.dungeon[this.yArr - 1][this.xArr];
+                        this.moving = true;
+
+                    } else if (this.nextDir == 'east' && !this.occupied.right) {
+                        this.destination = new Point(this.x + 2, this.y);
+                        this.game.dungeon[this.yArr][this.xArr + 1].enter();
+                        this.nextOccupied = this.game.dungeon[this.yArr][this.xArr + 1];
+                        this.moving = true;
+                    } else if (this.nextDir == 'south' && !this.occupied.bottom) {
+                        this.destination = new Point(this.x, this.y + 2);
+                        this.game.dungeon[this.yArr + 1][this.xArr].enter();
+                        this.nextOccupied = this.game.dungeon[this.yArr + 1][this.xArr];
+                        this.moving = true;
+                    } else if (!this.occupied.left) {
+                        this.destination = new Point(this.x - 2, this.y);
+                        this.game.dungeon[this.yArr][this.xArr - 1].enter();
+                        this.nextOccupied = this.game.dungeon[this.yArr][this.xArr - 1];
+                        this.moving = true;
+                    }
+                } else this.action = 0;
+
+                if (this.action == 1) {
+                    this.attackTimer += this.game.clockTick;
+                    if (this.attackTimer >= this.ATTACK_TIME) {
+                        this.attackTimer -= this.ATTACK_TIME;
+                        if (this.target.x == this.game.player.xArr && this.target.y == this.game.player.yArr) this.game.player.health -= 6;
+                    }
+                }
             }
         }
 
