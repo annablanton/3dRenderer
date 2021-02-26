@@ -159,28 +159,28 @@ class DungeonImp {
                 }
                 else if (this.nextDir != null && !this.moving) {
                     this.action = 0;
-                    if (this.nextDir == 'north' && !this.occupied.top) {
+                    if (this.nextDir == 'north' && !this.occupied.top && !(this.game.dungeon[this.yArr - 1][this.xArr].occupied)) {
                         this.destination = new Point(this.x, this.y - 2);
                         this.game.dungeon[this.yArr - 1][this.xArr].enter();
                         this.nextOccupied = this.game.dungeon[this.yArr - 1][this.xArr];
                         this.moving = true;
 
-                    } else if (this.nextDir == 'east' && !this.occupied.right) {
+                    } else if (this.nextDir == 'east' && !this.occupied.right && !(this.game.dungeon[this.yArr][this.xArr + 1].occupied)) {
                         this.destination = new Point(this.x + 2, this.y);
                         this.game.dungeon[this.yArr][this.xArr + 1].enter();
                         this.nextOccupied = this.game.dungeon[this.yArr][this.xArr + 1];
                         this.moving = true;
-                    } else if (this.nextDir == 'south' && !this.occupied.bottom) {
+                    } else if (this.nextDir == 'south' && !this.occupied.bottom && !(this.game.dungeon[this.yArr + 1][this.xArr].occupied)) {
                         this.destination = new Point(this.x, this.y + 2);
                         this.game.dungeon[this.yArr + 1][this.xArr].enter();
                         this.nextOccupied = this.game.dungeon[this.yArr + 1][this.xArr];
                         this.moving = true;
-                    } else if (!this.occupied.left) {
+                    } else if (!this.occupied.left && !(this.game.dungeon[this.yArr][this.xArr - 1].occupied)) {
                         this.destination = new Point(this.x - 2, this.y);
                         this.game.dungeon[this.yArr][this.xArr - 1].enter();
                         this.nextOccupied = this.game.dungeon[this.yArr][this.xArr - 1];
                         this.moving = true;
-                    }
+                    } else this.aStar(this.target);
                 } else this.action = 0;
 
                 if (this.action == 1) {

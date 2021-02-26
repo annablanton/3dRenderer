@@ -5,14 +5,15 @@ class Arrow {
         //console.log(this.direction);
         //console.log(this.spritesheet);
         
-        this.radius = 0.1;
-        this.p1 = new Point(this.x - PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
-        this.p2 = new Point(this.x + PRE_SCALE * this.radius / (((CANVAS_HEIGHT / 2 - this.y) + 2)), this.y);
-        this.testWall = new Wall(this.game, this.p1, this.p2, 'Black');
+        this.radius = 0.05;
+        this.p1 = new Point(this.x - this.radius, this.y);
+        this.p2 = new Point(this.x + this.radius, this.y);
+        var wallVector = new Vector(this.p2.x - this.p1.x, this.p2.y - this.p1.y);
+        this.testWall = new Wall(this.game, this.p1, this.p2, 'Black', { x: wallVector.x / STEP_COUNT, y: wallVector.y / STEP_COUNT });
 
         this.action = 0; //0 = walk, 1 = fire, 2 = die
         this.animations = [];
-        this.lifetime = 1000;
+        this.lifetime = 20;
         this.timeElapsed = 0;
         this.SCALE = 600;
         this.SPEED = 100;
@@ -104,12 +105,14 @@ class Arrow {
 
     getTransform(intCtx) {
         if (this.y <= CANVAS_HEIGHT / 2) {
-            intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2 - 2, this.y - 2, 4, 4);
+            intCtx.fillRect(PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y)) + CANVAS_WIDTH / 2 - 2, this.y - 2, 4, 4);
 
             var playerImpVector = new Vector(this.game.player.x - this.x, this.game.player.y - this.y);
             playerImpVector.normalize();
             console.log(this.direction);
-            return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2, this.y,
+            //return new Arrow(this.game, PRE_SCALE * -(CANVAS_WIDTH / 2 - this.x) / ((400 - this.y) + 2) + CANVAS_WIDTH / 2, this.y,
+            //    this.direction, this.animations);
+            return new Arrow(this.game, this.x, this.y,
                 this.direction, this.animations);
         } else return null;
     }
@@ -122,29 +125,29 @@ class Arrow {
         if (this.y <= CANVAS_HEIGHT / 2) {
             if (PARAMS.DEBUG) this.testWall.fpDraw(threeDCtx);
             if (this.direction <= Math.PI / 8 || this.direction >= 15 * Math.PI / 8) {
-                this.animations[0][4].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/10)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][4].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT/2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/10)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 3 * Math.PI / 8) {
-                this.animations[0][3].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/39)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][3].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/39)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 5 * Math.PI / 8) {
-                this.animations[0][2].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / (((CANVAS_HEIGHT / 2 - this.y) + 2) * 59));
+                this.animations[0][2].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / (((CANVAS_HEIGHT / 2 - this.y)) * 59));
             } else if (this.direction <= 7 * Math.PI / 8) {
-                this.animations[0][1].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/39)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][1].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/39)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 9 * Math.PI / 8) {
-                this.animations[0][0].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/9)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][0].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/9)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 11 * Math.PI / 8) {
-                this.animations[0][7].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/39)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][7].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/39)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 13 * Math.PI / 8) {
-                this.animations[0][6].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2))) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][6].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y))- (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y))) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             } else if (this.direction <= 15 * Math.PI / 8) {
-                this.animations[0][5].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE / PRE_SCALE * (this.x - CANVAS_WIDTH / 2) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59/39)) / 2 + CANVAS_WIDTH / 2,
-                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y + 2) + 250 / (CANVAS_HEIGHT / 2 - this.y + 2) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y + 2) * 59));
+                this.animations[0][5].drawFrame(this.game.clockTick, threeDCtx, POST_SCALE * (this.x - CANVAS_WIDTH / 2) / ((CANVAS_HEIGHT / 2 - this.y)) - (this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59/39)) / 2 + CANVAS_WIDTH / 2,
+                    -this.SCALE / 2 / (CANVAS_HEIGHT / 2 - this.y) + 250 / (CANVAS_HEIGHT / 2 - this.y) + CANVAS_HEIGHT / 2, this.SCALE / ((CANVAS_HEIGHT / 2 - this.y) * 59));
             }
 
             //threeDCtx.fillRect(320 * -(CANVAS_WIDTH / 2 - transformedArrow.x) / (400 - transformedArrow.y + 1) + CANVAS_WIDTH / 2 - 5, 400 - 5, 10, 10);

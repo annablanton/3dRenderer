@@ -219,6 +219,7 @@ class GameEngine {
         for (var i = 0; i < transEntities.length; i++) {
             //transEntities[i].draw(this.mapCtx);
             var nextEntity = transEntities[i].getTransform(this.intCtx);
+            console.log(nextEntity);
             if (nextEntity) {
                 nextEntity.fpDraw(this.threeDCtx);
             }

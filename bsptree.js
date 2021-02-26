@@ -6,6 +6,7 @@ class BSPTree {
             if (rootWall instanceof Wall || rootWall instanceof DungeonWall) this.root = new Wall(rootWall.game, rootWall.p1, rootWall.p2, rootWall.color);
             else if (rootWall instanceof Imp || rootWall instanceof DungeonImp) this.root = new Imp(rootWall.game, rootWall.x, rootWall.y, rootWall.direction, rootWall.animations, rootWall.action, rootWall.attackTimer);
             else if (rootWall instanceof Arrow) this.root = new Arrow(rootWall.game, rootWall.x, rootWall.y, rootWall.direction, rootWall.animations);
+            else this.root = new rootWall.constructor3D(rootWall.game, rootWall.x, rootWall.y);
             var backEntities = [];
             var frontEntities = [];
             var rootVector = new Vector(this.root.p2.x - this.root.p1.x, this.root.p2.y - this.root.p1.y);
@@ -26,21 +27,21 @@ class BSPTree {
                             frontEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations, wall.action, wall.attackTimer));
                         } else if (wall instanceof Arrow) {
                             frontEntities.push(new Arrow(wall.game, wall.x, wall.y, wall.direction, wall.animations));
-                        }
+                        } else frontEntities.push(new wall.constructor3D(wall.game, wall.x, wall.y));
                     } else if (d1 < 0) {
                         if (wall instanceof DungeonWall || wall instanceof Wall) {
                             var subwall1 = new Wall(wall.game, wall.p1, intersect, wall.color);
                             var subwall2 = new Wall(wall.game, intersect, wall.p2, wall.color);
                             frontEntities.push(subwall1);
                             backEntities.push(subwall2);
-                        }
+                        } else frontEntities.push(wall);
                     } else if (d2 < 0) {
                         if (wall instanceof DungeonWall || wall instanceof Wall) {
                             var subwall1 = new Wall(wall.game, wall.p2, intersect, wall.color);
                             var subwall2 = new Wall(wall.game, intersect, wall.p1, wall.color);
                             frontEntities.push(subwall1);
                             backEntities.push(subwall2);
-                        }
+                        } else frontEntities.push(wall);
                     } else {
                         if (wall instanceof DungeonWall || wall instanceof Wall) {
                             backEntities.push(new Wall(wall.game, wall.p1, wall.p2, wall.color));
@@ -48,6 +49,9 @@ class BSPTree {
                             backEntities.push(new Imp(wall.game, wall.x, wall.y, wall.direction, wall.animations, wall.action, wall.attackTimer));
                         } else if (wall instanceof Arrow) {
                             backEntities.push(new Arrow(wall.game, wall.x, wall.y, wall.direction));
+                        } else {
+                            console.log(wall);
+                            backEntities.push(new wall.constructor3D(wall.game, wall.x, wall.y));
                         }
                     }
 

@@ -39,16 +39,16 @@ class Player {
 
             const TICK = this.game.clockTick;
             if (!this.moving) {
-                if (this.game.up && !this.game.down && this.upReleased) {
+                if (this.game.up && !this.game.down /* && this.upReleased */) {
                     this.up();
                     this.upReleased = false;
-                } else if (this.game.down && !this.game.up && this.downReleased) {
+                } else if (this.game.down && !this.game.up /*&& this.downReleased */) {
                     this.down();
                     this.downReleased = false;
-                } else if (this.game.right && !this.game.left && this.rightReleased) {
+                } else if (this.game.right && !this.game.left /* && this.rightReleased*/) {
                     this.right();
                     this.rightReleased = false;
-                } else if (this.game.left && !this.game.right && this.leftReleased) {
+                } else if (this.game.left && !this.game.right/* && this.leftReleased*/) {
                     this.left();
                     this.leftReleased = false;
                 }
