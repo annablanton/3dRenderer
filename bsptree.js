@@ -50,7 +50,7 @@ class BSPTree {
                         } else if (wall instanceof Arrow) {
                             backEntities.push(new Arrow(wall.game, wall.x, wall.y, wall.direction));
                         } else {
-                            console.log(wall);
+                            //console.log(wall);
                             backEntities.push(new wall.constructor3D(wall.game, wall.x, wall.y));
                         }
                     }

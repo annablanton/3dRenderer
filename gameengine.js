@@ -20,6 +20,11 @@ class GameEngine {
         this.turnRight = false;
         this.space = false;
         this.xDelta = 0;
+        this.enemies = 0;
+        this.spawnTimer = 0;
+        this.wave = 0;
+
+        this.validSpawns = [];
 
         //this.map = mapGraph;
         this.player = null;
@@ -56,6 +61,7 @@ class GameEngine {
     };
 
     start() {
+        console.log(this.validSpawns);
         var that = this;
         (function gameLoop() {
             that.loop();
@@ -196,6 +202,16 @@ class GameEngine {
         } else this.entities.push(entity);
     };
 
+    depthFirstSearch(v) {
+        var curr = this.dungeon[v.y][v.x];
+        if (!curr.discovered) this.validSpawns.push(v);
+        curr.discovered = true;
+        if (v.x - 1 >= 0 && !curr.left && !this.dungeon[v.y][v.x - 1].discovered) this.depthFirstSearch({ x: v.x - 1, y: v.y });
+        if (v.x + 1 < this.dungeon[v.y].length && !curr.right && !this.dungeon[v.y][v.x + 1].discovered) this.depthFirstSearch({ x: v.x + 1, y: v.y });
+        if (v.y + 1 < this.dungeon.length && !curr.bottom && !this.dungeon[v.y + 1][v.x].discovered) this.depthFirstSearch({ x: v.x, y: v.y + 1 });
+        if (v.y - 1 >= 0 && !curr.top && !this.dungeon[v.y - 1][v.x].discovered) this.depthFirstSearch({ x: v.x, y: v.y - 1 });
+    }
+
     draw() {
         this.mapCtx.clearRect(-CANVAS_WIDTH/2, -CANVAS_HEIGHT/2, this.mapCtx.canvas.width, this.mapCtx.canvas.height);
         this.intCtx.clearRect(0, 0, this.intCtx.canvas.width, this.intCtx.canvas.height);
@@ -204,7 +220,9 @@ class GameEngine {
         this.threeDCtx.fillStyle = "Cyan";
         this.threeDCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT/2);
         this.threeDCtx.fillStyle = "darkgrey";
-        this.threeDCtx.fillRect(0, CANVAS_HEIGHT/2, CANVAS_WIDTH, CANVAS_HEIGHT /2);
+        this.threeDCtx.fillRect(0, CANVAS_HEIGHT / 2, CANVAS_WIDTH, CANVAS_HEIGHT / 2);
+        this.threeDCtx.fillText("Wave: " + this.wave.toString(), 20, 20);
+        this.threeDCtx.fillText("Enemies remaining: " + this.enemies.toString(), 20, 50);
         this.mapCtx.save();
         //console.log(this.entities)
         var bsp = new BSPTree(this.entities);
@@ -219,7 +237,7 @@ class GameEngine {
         for (var i = 0; i < transEntities.length; i++) {
             //transEntities[i].draw(this.mapCtx);
             var nextEntity = transEntities[i].getTransform(this.intCtx);
-            console.log(nextEntity);
+            //console.log(nextEntity);
             if (nextEntity) {
                 nextEntity.fpDraw(this.threeDCtx);
             }
@@ -239,6 +257,29 @@ class GameEngine {
     };
 
     update() {
+        if (!this.enemies) {
+            this.wave++;
+            this.enemies = 3 + this.wave * 2;
+            this.spawnTimer = 1;
+        } else if (this.spawnTimer) {
+            this.spawnTimer -= this.clockTick;
+            if (this.spawnTimer <= 0) {
+                this.spawnTimer = 0;
+                this.spawning = true;
+            }
+        } else if (this.spawning) {
+            this.spawning = false;
+            var selectedSpawns = [];
+            for (var i = 0; i < this.enemies; i++) {
+                var nextSpawnVal = randomInt(this.validSpawns.length);
+                var nextSpawn = this.validSpawns[nextSpawnVal];
+                this.validSpawns.splice(nextSpawnVal, 1);
+                selectedSpawns.push(nextSpawn);
+                this.addEntity(new DungeonImp(this, nextSpawn.x, nextSpawn.y, Math.random() * 2 * Math.PI));
+            }
+
+            this.validSpawns = this.validSpawns.concat(selectedSpawns);
+        }
         //console.log(this.click);
         PARAMS.DEBUG = document.getElementById("debug").checked;
         var entitiesCount = this.entities.length;
@@ -257,6 +298,7 @@ class GameEngine {
                 this.entities.splice(i, 1);
                 if (entity instanceof DungeonImp) {
                     entity.cleanMap();
+                    this.enemies--;
                 }
             }
         }

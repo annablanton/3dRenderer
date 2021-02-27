@@ -5,7 +5,7 @@ class Arrow {
         //console.log(this.direction);
         //console.log(this.spritesheet);
         
-        this.radius = 0.05;
+        this.radius = 0.1;
         this.p1 = new Point(this.x - this.radius, this.y);
         this.p2 = new Point(this.x + this.radius, this.y);
         var wallVector = new Vector(this.p2.x - this.p1.x, this.p2.y - this.p1.y);

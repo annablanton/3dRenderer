@@ -33,7 +33,7 @@ class DungeonWall {
             }
         }
 
-        console.log(this.game.dungeon);
+        //console.log(this.game.dungeon);
     }
 
     update() {
