@@ -14,6 +14,7 @@ class DungeonImp {
         this.SPEED = 3;
         this.animations = [];
         this.radius = 0.5;
+        //this.lineCollision = true;
         this.action = 0;
         for (var i = 0; i < 3; i++) {
             this.animations.push([]);
