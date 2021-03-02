@@ -44,14 +44,17 @@ class Arrow {
 
         var that = this;
         this.game.entities.forEach(function (entity) {
-            if (entity !== that && entity.radius && that.collide(entity)) {
-                if (entity instanceof DungeonImp) {
-                    that.removeFromWorld = true;
-                    entity.health -= 2;
-                }
-            }
+            //if (entity !== that && entity.radius && that.collide(entity) && !entity.lineCollision) {
+            //    if (entity instanceof DungeonImp) {
+            //        that.removeFromWorld = true;
+            //        entity.health -= 2;
+            //    }
+            //}
 
             if (entity && entity !== that && entity.lineCollision && that.collide(entity)) {
+                if (entity instanceof DungeonImp) {
+                    entity.health -= 2;
+                }
                 that.removeFromWorld = true;
             }
         })
@@ -74,8 +77,8 @@ class Arrow {
     }
 
     collide(other) {
-        if (other.radius) return distance(this.x, this.y, other.x, other.y) < this.radius + other.radius
-            || distance(this.x - this.SPEED * this.game.clockTick * Math.cos(this.direction) / 2, this.y - this.SPEED * this.game.clockTick * Math.sin(this.direction) / 2, other.x, other.y) < this.radius + other.radius;
+        //if (other.radius) return distance(this.x, this.y, other.x, other.y) < this.radius + other.radius
+        //    || distance(this.x - this.SPEED * this.game.clockTick * Math.cos(this.direction) / 2, this.y - this.SPEED * this.game.clockTick * Math.sin(this.direction) / 2, other.x, other.y) < this.radius + other.radius;
         if (other.lineCollision) {
             var lineVector = new Vector(other.p2.x - other.p1.x, other.p2.y - other.p1.y);
             var perpendicularAngle = Math.atan2(lineVector.y, lineVector.x) + Math.PI / 2;
