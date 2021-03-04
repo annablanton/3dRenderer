@@ -57,7 +57,7 @@ class SceneManager {
         game.addEntity(new DungeonWall(game, 25, 31, 'x', 21, "Purple"));
         game.depthFirstSearch({ x: 0, y: 0 });
         //game.addEntity(new DungeonImp(game, 5, 5, Math.PI));
-        game.addEntity(new DungeonChicken(game, 3, 3));
+        //game.addEntity(new DungeonChicken(game, 3, 3));
 
     };
 

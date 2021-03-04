@@ -241,6 +241,7 @@ class DungeonImp {
 
     draw(ctx) {
         ctx.fillRect(this.x - 2, this.y - 2, 4, 4);
+        ctx.fillRect(this.x + 3 * this.radius * Math.cos(this.game.player.direction + Math.PI / 2), this.y + 3 * this.radius * Math.sin(this.game.player.direction + Math.PI / 2), 2, 2);
     }
 
     collide(other) {
@@ -326,9 +327,9 @@ class DungeonImp {
             //}
 
             var bestNode = openSetCoords.removeMin();
-            var currNode = this.game.dungeon[yArr][xArr];
             xArr = bestNode.coords.x;
             yArr = bestNode.coords.y;
+            var currNode = this.game.dungeon[yArr][xArr];
 
 
 

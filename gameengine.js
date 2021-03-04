@@ -61,7 +61,6 @@ class GameEngine {
     };
 
     start() {
-        console.log(this.validSpawns);
         var that = this;
         (function gameLoop() {
             that.loop();
@@ -260,7 +259,16 @@ class GameEngine {
         if (!this.enemies) {
             this.wave++;
             this.enemies = 3 + this.wave * 2;
-            this.spawnTimer = 1;
+            this.spawnTimer = 2;
+            var selectedSpawns = [];
+            for (var i = 0; i < 4 - Math.ceil(this.player.health / 30); i++) {
+                var nextSpawnVal = randomInt(this.validSpawns.length);
+                var nextSpawn = this.validSpawns[nextSpawnVal];
+                this.validSpawns.splice(nextSpawnVal, 1);
+                selectedSpawns.push(nextSpawn);
+                this.addEntity(new DungeonChicken(this, nextSpawn.x, nextSpawn.y));
+            }
+            this.validSpawns = this.validSpawns.concat(selectedSpawns);
         } else if (this.spawnTimer) {
             this.spawnTimer -= this.clockTick;
             if (this.spawnTimer <= 0) {
@@ -279,6 +287,8 @@ class GameEngine {
             }
 
             this.validSpawns = this.validSpawns.concat(selectedSpawns);
+
+
         }
         //console.log(this.click);
         PARAMS.DEBUG = document.getElementById("debug").checked;

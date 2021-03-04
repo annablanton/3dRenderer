@@ -15,7 +15,7 @@ class DungeonChicken {
 
     update() {
         if (this.collide(this.game.player)) {
-            this.game.player.health = Math.min(this.game.player.health + 6, 100);
+            this.game.player.health = Math.min(this.game.player.health + 10, 100);
             this.removeFromWorld = true;
         }
     }
