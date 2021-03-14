@@ -8,10 +8,15 @@ function getRandomMagnitude(n) {
     return randomInt(n) - n / 2;
 }
 
+var checkbox = document.getElementById("debug");
+checkbox.checked = false;
+
 var ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("./sprites/imp.png");
 ASSET_MANAGER.queueDownload("./sprites/chickenonaplate-1.png");
 ASSET_MANAGER.queueDownload("./sprites/projectiles.png");
+ASSET_MANAGER.queueDownload("./sounds/dsclaw.wav");
+ASSET_MANAGER.queueDownload("./sounds/dsbgsit1.wav");
 ASSET_MANAGER.downloadAll(function () {
     var map = document.getElementById("map");
     map.width = CANVAS_WIDTH;

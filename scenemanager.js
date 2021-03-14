@@ -25,6 +25,8 @@ class SceneManager {
         game.addEntity(new DungeonWall(game, 43, 31, 'x', 52, "Green"));
         game.addEntity(new DungeonWall(game, 40, 31, 'x', 31, "Green"));
         game.addEntity(new DungeonWall(game, 52, 31, 'y', 52, "Green"));
+        game.addEntity(new DungeonWall(game, 31, 25, 'x', 40, "Green"));
+        game.addEntity(new DungeonWall(game, 31, 27, 'x', 40, "Green"));
         game.addEntity(new DungeonWall(game, 31, 31, 'y', 40, "DarkOrange"));
         game.addEntity(new DungeonWall(game, 31, 43, 'y', 52, "DarkOrange"));
         game.addEntity(new DungeonWall(game, 31, 40, 'x', 27, "DarkOrange"));

@@ -131,8 +131,10 @@ class DungeonImp {
             }
 
             if (!this.aggressive) {
-                if (distance(this.x, this.y, this.game.player.x, this.game.player.y) < 40) this.aggressive = true;
-                else if (this.health < this.MAX_HEALTH) this.aggressive = true;
+                if (distance(this.x, this.y, this.game.player.x, this.game.player.y || this.health < this.MAX_HEALTH) < 40) {
+                    this.aggressive = true;
+                    ASSET_MANAGER.playAsset("./sounds/dsbgsit1.wav");
+                }
 
             }
             if (this.aggressive) {
@@ -225,7 +227,10 @@ class DungeonImp {
                     this.attackTimer += this.game.clockTick;
                     if (this.attackTimer >= this.ATTACK_TIME) {
                         this.attackTimer -= this.ATTACK_TIME;
-                        if (this.target.x == this.game.player.xArr && this.target.y == this.game.player.yArr && !PARAMS.DEBUG) this.game.player.health -= 6;
+                        if (this.target.x == this.game.player.xArr && this.target.y == this.game.player.yArr && !PARAMS.DEBUG) {
+                            this.game.player.health -= 6;
+                            ASSET_MANAGER.playAsset("./sounds/dsclaw.wav");
+                        }
                     }
                 }
             }
